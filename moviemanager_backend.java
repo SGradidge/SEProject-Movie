@@ -12,7 +12,8 @@ public class moviemanager_backend
     	{
 			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/Pyro/Desktop/SE Project/Movie.accdb");
 			System.out.println("Database successfully opened");
-			test();
+			customerDetails(1);
+			editCustomerDetails(1,"Pieter Van Zyl","Houtbay",0);
 			con.close();
 		} 
     	catch (Exception e) 
@@ -43,7 +44,7 @@ public class moviemanager_backend
 	void menuBar()
 	{
 
-	}// Called with each window
+	}
 
 	void loginPage()
 	{
@@ -58,7 +59,7 @@ public class moviemanager_backend
 	void optionsScreen()
 	{
 
-	}// Calls changePassword() and reports()
+	}
 
 	void changePassword()
 	{
@@ -120,10 +121,28 @@ public class moviemanager_backend
 
 	}
 
-	void customerDetails()
+	public String [] customerDetails(int accNo)
 	{
-
-	}// calls addCustomer() and removeCustomer()
+		String [] data = new String[5];
+		try
+		{
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Customer_Details WHERE Account_Number = " + accNo + "");
+			while (rs.next()) 
+			{
+			    for(int i = 1; i < 6; i++)
+			    {
+			    	data[i-1] = rs.getString(i);
+			    }
+			}
+			System.out.println(data[1]);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return data;
+	}
 
 	void addCustomer()
 	{
@@ -135,9 +154,23 @@ public class moviemanager_backend
 
 	}
 
-	void editCustomerDetails()
+	void editCustomerDetails(int accNo, String fullName, String address, double amount)
 	{
-
+		try
+		{
+			String sql = "UPDATE Customer_Details SET Full_Name = ?, Address = ?, Amount_Outstanding = ? WHERE Account_Number = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,fullName);
+			pstmt.setString(2,address);
+			pstmt.setDouble(3,amount);
+			pstmt.setInt(4,accNo);
+			int nrows = pstmt.executeUpdate();
+			customerDetails(1);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
 	void cashOut()
