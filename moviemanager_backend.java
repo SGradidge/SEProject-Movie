@@ -1,5 +1,5 @@
-import java.io.*;
 import java.sql.*;
+import java.security.*;
    
 public class moviemanager_backend 
 {
@@ -12,113 +12,163 @@ public class moviemanager_backend
     	{
 			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/Pyro/Desktop/SE Project/Movie.accdb");
 			System.out.println("Database successfully opened");
-			customerDetails(1);
-			editCustomerDetails(1,"Pieter Van Zyl","Houtbay",0);
-			con.close();
+			
+			//Put methods here to test
+			
+			//
+			
+			finish();
 		} 
     	catch (Exception e) 
     	{
     		System.out.println("Failed to open database");
 		}
     	
-    }
+    }   
     
-    public void test()
-    {
-    	try
-    	{
-	    	Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT Bar_Code FROM Movie_Details");
+	public boolean loginCheck(String username, String password)
+	{
+		try
+		{
+			byte[] bytesOfMessage = password.getBytes("UTF-8");
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] thedigest = md.digest(bytesOfMessage);
+			StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < thedigest.length; ++i) 
+	        {
+	        	sb.append(Integer.toHexString((thedigest[i] & 0xFF) | 0x100).substring(1,3));
+	        }
+			
+			String sql = "SELECT Password FROM User_Details WHERE Username = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,username);
+			ResultSet rs = pstmt.executeQuery();
+			
 			while (rs.next()) 
 			{
-			    System.out.println("Barcode is: " + rs.getString(1));
+			    if(rs.getString(1).equals(sb.toString()))
+			    {
+			    	return true;
+			    }
 			}
-    	}
-    	catch(Exception e)
-    	{
-    		
-    	}
-    }
-    
-    
-	void menuBar()
-	{
-
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return false;
 	}
 
-	void loginPage()
-	{
-
+	public void changePassword(String username, String password)
+	{	
+		try
+		{
+			byte[] bytesOfMessage = password.getBytes("UTF-8");
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] thedigest = md.digest(bytesOfMessage);
+			StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < thedigest.length; ++i) 
+	        {
+	        	sb.append(Integer.toHexString((thedigest[i] & 0xFF) | 0x100).substring(1,3));
+	        }
+			
+			String sql = "UPDATE User_Details SET Password = ? WHERE Username = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,sb.toString());
+			pstmt.setString(2,username);
+			int nrows = pstmt.executeUpdate();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
-	void rentReturnMenu()
+	public String [][] reports(int report)
 	{
+		ResultSet rs;
+		String [][] data  = new String[1][1];
+		int size;
+		
+		try
+		{			
+			if(report == 1)
+			{
+				size = 5;
+				data = new String[1000][size]; 
+				Statement stmt = con.createStatement();
+				rs = stmt.executeQuery("SELECT * FROM Customer_Details");
+			}
+			else
+			{
+				size = 6;
+				data = new String[1000][size]; 
+				Statement stmt = con.createStatement();
+				rs = stmt.executeQuery("SELECT * FROM Movie_Details");
+			}
+				
+				int count = 0;
+				while (rs.next()) 
+				{
+				    	for(int j = 0; j < size; j++)
+				    	{
+				    		data[count][j] = rs.getString(j+1);
+				    	}
+				    	count++;
+				}
 
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return data;
 	}
 
-	void optionsScreen()
-	{
-
-	}
-
-	void changePassword()
-	{
-
-	}
-
-	void reports()
-	{
-
-	}
-
-	void addMovie(int barCode, String movieName, String genre, String category, double price, int numberAvailable)
+	public void addMovie(int barCode, String movieName, String genre, String category, double price, int numberAvailable)
 	{
 			try
 			{
-				int barC = barCode;
-				String movieN = movieName;
-				String gen = genre;
-				String categ = category;
-				double pr = price;
-				int numberA = numberAvailable;
 	
-				Statement stmt = con.createStatement();
-				ResultSet rs = stmt.executeQuery("Insert into Movie_Details(" + barCode + ", " + movieName + ", " + genre + ", " +  category + ", " + price + ", " + numberAvailable + ")");
 			}
 			catch(Exception e)
 			{
-				
+				System.out.println(e);
 			}
 	}
 
-	void removeMovie(int barCode)
+	public void removeMovie(int barCode)
 	{
 			try
 			{
-				Statement stmt = con.createStatement();
-				String query = "Delete From Movie_Details Where Bar_Code=" + barCode + "";
-				int success = stmt.executeUpdate(query);
-				stmt.close();
-	
-				if(success == 0)
-				{
-					System.out.println("Barcode not found");
-				}
-				else
-				{
-					System.out.println("Row deleted");
-				}
+
 			}
 			catch(Exception e)
 			{
-				
+				System.out.println(e);
 			}
-
 	}
 
-	void returnMovie()
+	public void returnMovie(long barcode)
 	{
-
+		try
+		{
+			String sql = "UPDATE Customer_Details SET Bar_Code = ? WHERE Bar_Code = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,0);
+			pstmt.setLong(2,barcode);
+			int nrows = pstmt.executeUpdate();
+			
+			sql = "UPDATE Movie_Details SET Number_Available = ? WHERE Bar_Code = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,1);
+			pstmt.setLong(2,barcode);
+			nrows = pstmt.executeUpdate();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
 	public String [] customerDetails(int accNo)
@@ -144,17 +194,31 @@ public class moviemanager_backend
 		return data;
 	}
 
-	void addCustomer()
+	public void addCustomer()
 	{
+		try
+		{
 
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
-	void removeCustomer()
+	public void removeCustomer()
 	{
+		try
+		{
 
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
-	void editCustomerDetails(int accNo, String fullName, String address, double amount)
+	public void editCustomerDetails(int accNo, String fullName, String address, double amount)
 	{
 		try
 		{
@@ -173,19 +237,39 @@ public class moviemanager_backend
 		}
 	}
 
-	void cashOut()
+	public void finish()
 	{
-
+		try
+		{
+			con.close();
+			System.out.println("Database successfully closed");
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 
-	void finish()
+	public boolean validateNumber(String number, int type)
 	{
-
-	}
-
-	void validateNumber()
-	{
-
+		try
+		{
+			if(type == 1)
+			{
+				String regex = "[\\d+]{4}";
+				return number.matches(regex);
+			}
+			else
+			{
+				String regex = "[\\d+]{13,13}";
+				return number.matches(regex);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return false;
 	}
 	
 	public static void main (String [] args)
