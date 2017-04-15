@@ -1,9 +1,12 @@
 import java.sql.*;
+
+import java.util.*;
+
 import java.security.*;
    
 public class moviemanager_backend 
 {
-	Connection con;
+	private Connection con;
  
     
     public moviemanager_backend()
@@ -14,10 +17,8 @@ public class moviemanager_backend
 			System.out.println("Database successfully opened");
 			
 			//Put methods here to test
-			
-			//
-			
-			finish();
+			customerDetails(1);
+			//finish();
 		} 
     	catch (Exception e) 
     	{
@@ -125,7 +126,7 @@ public class moviemanager_backend
 		return data;
 	}
 
-	public void addMovie(int barCode, String movieName, String genre, String category, double price, int numberAvailable)
+	public void addMovie(int productID, String movieName, String genre, String category, double price, int numberAvailable)
 	{
 			try
 			{
@@ -137,7 +138,7 @@ public class moviemanager_backend
 			}
 	}
 
-	public void removeMovie(int barCode)
+	public void removeMovie(int productID)
 	{
 			try
 			{
@@ -149,20 +150,48 @@ public class moviemanager_backend
 			}
 	}
 
-	public void returnMovie(long barcode)
+	public void returnMovie(long productID)
 	{
 		try
 		{
-			String sql = "UPDATE Customer_Details SET Bar_Code = ? WHERE Bar_Code = ?";
+			String sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Product_ID = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1,0);
-			pstmt.setLong(2,barcode);
+			pstmt.setLong(2,productID);
 			int nrows = pstmt.executeUpdate();
 			
-			sql = "UPDATE Movie_Details SET Number_Available = ? WHERE Bar_Code = ?";
+			sql = "UPDATE Movie_Details SET Available = ? WHERE Product_ID = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1,1);
-			pstmt.setLong(2,barcode);
+			pstmt.setLong(2,productID);
+			nrows = pstmt.executeUpdate();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+	
+	public void rentMovie(long productID, int accNo)
+	{
+		try
+		{
+			String sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Account_Number = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setLong(1,productID);
+			pstmt.setInt(2,accNo);
+			int nrows = pstmt.executeUpdate();
+			
+			sql = "UPDATE Movie_Details SET Available = ? WHERE Product_ID = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,0);
+			pstmt.setLong(2,productID);
+			nrows = pstmt.executeUpdate();
+			
+			sql = "UPDATE Customer_Details SET Amount_Outstanding = ? WHERE Account_Number = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1,0);
+			pstmt.setLong(2,accNo);
 			nrows = pstmt.executeUpdate();
 		}
 		catch(Exception e)
@@ -185,7 +214,28 @@ public class moviemanager_backend
 			    	data[i-1] = rs.getString(i);
 			    }
 			}
-			System.out.println(data[1]);
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return data;
+	}
+	
+	public String [] movieDetails(int productID)
+	{
+		String [] data = new String[6];
+		try
+		{
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Movie_Details WHERE Product_ID = " + productID + "");
+			while (rs.next()) 
+			{
+			    for(int i = 1; i < 7; i++)
+			    {
+			    	data[i-1] = rs.getString(i);
+			    }
+			}
 		}
 		catch(Exception e)
 		{
