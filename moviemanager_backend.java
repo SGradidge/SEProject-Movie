@@ -244,11 +244,18 @@ public class moviemanager_backend
 		return data;
 	}
 
-	public void addCustomer()
+	public void addCustomer(int accNo, String fullName, String address, double amount, int productID)
 	{
 		try
 		{
-
+                    String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?)";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setInt(1, accNo);
+                    pstmt.setString(2, fullName);
+                    pstmt.setString(3, address);
+                    pstmt.setDouble(4, amount);
+                    pstmt.setInt(5, productID);
+                    pstmt.execute();
 		}
 		catch(Exception e)
 		{
@@ -256,12 +263,15 @@ public class moviemanager_backend
 		}
 	}
 
-	public void removeCustomer()
+	public void removeCustomer(int accNo)
 	{
 		try
 		{
-
-		}
+                    String sql = "DELETE FROM Customer_Details WHERE Account_Number = ?";
+                    PreparedStatement pstmt = con.prepareStatement(sql);
+                    pstmt.setInt(1, accNo);
+                    pstmt.execute();
+		}		
 		catch(Exception e)
 		{
 			System.out.println(e);
