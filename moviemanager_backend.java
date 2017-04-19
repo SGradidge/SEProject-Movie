@@ -130,7 +130,15 @@ public class moviemanager_backend
 	{
 			try
 			{
-	
+				String sql = "INSERT INTO Movie_Details VALUES(?,?,?,?,?,?)";
+				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, productID);
+				pstmt.setString(2, movieName);
+				pstmt.setString(3, genre);
+				pstmt.setString(4, category);
+				pstmt.setDouble(5, price);
+				pstmt.setInt(6, numberAvailable);
+				int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
 			{
@@ -142,7 +150,10 @@ public class moviemanager_backend
 	{
 			try
 			{
-
+				String sql = "DELETE FROM Movie_Details WHERE productID=?";
+                            	PreparedStatement pstmt = con.prepareStatement(sql);
+                            	pstmt.setInt(1, productID);
+                            	int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
 			{
