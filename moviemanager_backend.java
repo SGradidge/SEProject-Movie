@@ -125,6 +125,16 @@ public class moviemanager_backend
 		}
 		return data;
 	}
+        
+        /**
+         * This method allows you to add a movie to the database using SQL
+         * @param productID The product ID for the movie
+         * @param movieName The name of the movie to be added
+         * @param genre The genre of the movie to be added
+         * @param category The product category of the movie
+         * @param price The price of the movie
+         * @param numberAvailable The amount of stock available
+         */
 
 	public void addMovie(int productID, String movieName, String genre, String category, double price, int numberAvailable)
 	{
@@ -145,6 +155,11 @@ public class moviemanager_backend
 				System.out.println(e);
 			}
 	}
+        
+        /**
+         * This method removes a selected movie from the database
+         * @param productID
+         */
 
 	public void removeMovie(int productID)
 	{
