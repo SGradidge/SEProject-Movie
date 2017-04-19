@@ -13,7 +13,7 @@ public class moviemanager_backend
     {
     	try 
     	{
-			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/Pyro/Desktop/SE Project/Movie.accdb");
+			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/JoelKenneth/Documents/CompSci3rdYear/SEProject-Movie-master/Movie.accdb");
 			System.out.println("Database successfully opened");
 			
 			//Put methods here to test
@@ -22,7 +22,8 @@ public class moviemanager_backend
 		} 
     	catch (Exception e) 
     	{
-    		System.out.println("Failed to open database");
+    		//System.out.println("Failed to open database");
+    		e.printStackTrace();
 		}
     	
     }   
@@ -130,7 +131,15 @@ public class moviemanager_backend
 	{
 			try
 			{
-	
+				String sql = "INSERT INTO Movie_Details VALUES(?,?,?,?,?,?)";
+				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, productID);
+				pstmt.setString(2, movieName);
+				pstmt.setString(3, genre);
+				pstmt.setString(4, category);
+				pstmt.setDouble(5, price);
+				pstmt.setInt(6, numberAvailable);
+				int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
 			{
@@ -142,7 +151,10 @@ public class moviemanager_backend
 	{
 			try
 			{
-
+                            String sql = "DELETE FROM Movie_Details WHERE productID = ?";
+                            PreparedStatement pstmt = con.prepareStatement(sql);
+                            pstmt.setInt(1, productID);
+                            int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
 			{
@@ -244,18 +256,11 @@ public class moviemanager_backend
 		return data;
 	}
 
-	public void addCustomer(int accNo, String fullName, String address, double amount, int productID)
+	public void addCustomer()
 	{
 		try
 		{
-                    String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?)";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setInt(1, accNo);
-                    pstmt.setString(2, fullName);
-                    pstmt.setString(3, address);
-                    pstmt.setDouble(4, amount);
-                    pstmt.setInt(5, productID);
-                    pstmt.execute();
+
 		}
 		catch(Exception e)
 		{
@@ -263,15 +268,12 @@ public class moviemanager_backend
 		}
 	}
 
-	public void removeCustomer(int accNo)
+	public void removeCustomer()
 	{
 		try
 		{
-                    String sql = "DELETE FROM Customer_Details WHERE Account_Number = ?";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setInt(1, accNo);
-                    pstmt.execute();
-		}		
+
+		}
 		catch(Exception e)
 		{
 			System.out.println(e);
