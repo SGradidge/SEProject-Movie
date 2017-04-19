@@ -270,6 +270,14 @@ public class moviemanager_backend
 		return data;
 	}
 
+	 /**
+         * This method allows you to add a customer to the database using SQL
+         * @param accNo The account number of the customer
+         * @param fullName The full name of the customer
+         * @param address The customers' address
+         * @param amount The amount still due by the customer
+         * @param productID The product ID linked to the customer (that was rented) 
+         */
 	public void addCustomer(int accNo, String fullName, String address, double amount, int productID)
 	{
 		try
@@ -288,7 +296,11 @@ public class moviemanager_backend
 			System.out.println(e);
 		}
 	}
-
+	
+	 /**
+         * This method removes the selected customer from the database using their unique account number as input. 
+         * @param accNo The account number of the customer
+         */
 	public void removeCustomer(int accNo)
 	{
 		try
