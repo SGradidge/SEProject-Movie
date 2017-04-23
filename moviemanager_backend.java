@@ -8,16 +8,15 @@ public class moviemanager_backend
 {
 	private Connection con;
  
-    
     public moviemanager_backend()
     {
     	try 
     	{
 			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/Pyro/Desktop/SE Project/Movie.accdb");
-			System.out.println("Database successfully opened");
+			//System.out.println("Database successfully opened");
 			
 			//Put methods here to test
-			customerDetails(1);
+			
 			//finish();
 		} 
     	catch (Exception e) 
@@ -27,6 +26,12 @@ public class moviemanager_backend
     	
     }   
     
+    /**
+     * This method checks for valid login credentials
+     * @param username Used to identify the user
+     * @param password Used to verify the identity
+     * @return
+     */
 	public boolean loginCheck(String username, String password)
 	{
 		try
@@ -60,6 +65,11 @@ public class moviemanager_backend
 		return false;
 	}
 
+	/**
+	 * This method is used to change the password of a user
+	 * @param username Used to identify the user
+     * @param password Used to verify the identity
+	 */
 	public void changePassword(String username, String password)
 	{	
 		try
@@ -84,7 +94,12 @@ public class moviemanager_backend
 			System.out.println(e);
 		}
 	}
-
+	
+	/**
+	 * This method return data for the various reports
+	 * @param report indicates which type of report is required
+	 * @return
+	 */
 	public String [][] reports(int report)
 	{
 		ResultSet rs;
@@ -133,10 +148,10 @@ public class moviemanager_backend
          * @param genre The genre of the movie to be added
          * @param category The product category of the movie
          * @param price The price of the movie
-         * @param numberAvailable The amount of stock available
+         * @param status If the movie is available
          */
 
-	public void addMovie(int productID, String movieName, String genre, String category, double price, int numberAvailable)
+	public void addMovie(int productID, String movieName, String genre, String category, double price, int status)
 	{
 			try
 			{
@@ -147,7 +162,7 @@ public class moviemanager_backend
 				pstmt.setString(3, genre);
 				pstmt.setString(4, category);
 				pstmt.setDouble(5, price);
-				pstmt.setInt(6, numberAvailable);
+				pstmt.setInt(6, status);
 				int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
@@ -158,24 +173,28 @@ public class moviemanager_backend
         
         /**
          * This method removes a selected movie from the database
-         * @param productID
+         * @param productID Used to uniquely identify movies
          */
 
 	public void removeMovie(int productID)
 	{
 			try
 			{
-				String sql = "DELETE FROM Movie_Details WHERE productID=?";
-                            	PreparedStatement pstmt = con.prepareStatement(sql);
-                            	pstmt.setInt(1, productID);
-                            	int nrows = pstmt.executeUpdate();
+				String sql = "DELETE FROM Movie_Details WHERE Product_ID=?";
+                PreparedStatement pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, productID);
+                int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
 			{
 				System.out.println(e);
 			}
 	}
-
+	
+	/**
+	 * This method is used to return a movie
+	 * @param productID Used to uniquely identify movies
+	 */
 	public void returnMovie(long productID)
 	{
 		try
@@ -198,6 +217,11 @@ public class moviemanager_backend
 		}
 	}
 	
+	/**
+	 * This method allows for movies to be rented to a customer
+	 * @param productID Used to uniquely identify movies
+	 * @param accNo Used to uniquely identify the customer
+	 */
 	public void rentMovie(long productID, int accNo)
 	{
 		try
@@ -226,6 +250,11 @@ public class moviemanager_backend
 		}
 	}
 
+	/**
+	 * This method looks up the specific customer's details
+	 * @param accNo Used to uniquely identify the customer
+	 * @return
+	 */
 	public String [] customerDetails(int accNo)
 	{
 		String [] data = new String[5];
@@ -248,6 +277,11 @@ public class moviemanager_backend
 		return data;
 	}
 	
+	/**
+	 * This method looks up the specific movie's details
+	 * @param productID Used to uniquely identify a movie
+	 * @return
+	 */
 	public String [] movieDetails(int productID)
 	{
 		String [] data = new String[6];
@@ -315,17 +349,23 @@ public class moviemanager_backend
 			System.out.println(e);
 		}
 	}
-
-	public void editCustomerDetails(int accNo, String fullName, String address, double amount)
+	
+	/**
+	 * This method is to edit the details of an existing customer
+	 * @param accNo Used to uniquely identify the customer
+	 * @param fullName Full name of the customer
+	 * @param address Address of the customer
+	 * @param amount The customers outstanding balance
+	 */
+	public void editCustomerDetails(int accNo, String fullName, String address)
 	{
 		try
 		{
-			String sql = "UPDATE Customer_Details SET Full_Name = ?, Address = ?, Amount_Outstanding = ? WHERE Account_Number = ?";
+			String sql = "UPDATE Customer_Details SET Full_Name = ?, Address = ? WHERE Account_Number = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1,fullName);
 			pstmt.setString(2,address);
-			pstmt.setDouble(3,amount);
-			pstmt.setInt(4,accNo);
+			pstmt.setInt(3,accNo);
 			int nrows = pstmt.executeUpdate();
 			customerDetails(1);
 		}
@@ -334,7 +374,73 @@ public class moviemanager_backend
 			System.out.println(e);
 		}
 	}
+	
+	/**
+	 * This method auto-generates the next available Product ID
+	 * @return The next available Product ID is returned
+	 */
+	public int makeProductID()
+	{
+		int productID = 0;
+		try
+		{
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Movie_Details");
+			while (rs.next()) 
+			{
+			    productID = rs.getInt(1);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return productID + 1;
+	}
+	
+	public int makeAccountNumber()
+	{
+		int accNo = 0;
+		try
+		{
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Customer_Details");
+			while (rs.next()) 
+			{
+			    accNo = rs.getInt(1);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return accNo + 1;
+	}
+	
+	public int getAccessLevel(String username)
+	{
+		int accesslevel = 0;
+		try
+		{
+			String sql = "SELECT Access_Level FROM User_Details WHERE Username = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,username);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) 
+			{
+			    accesslevel = rs.getInt(1);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return accesslevel;
+	}
 
+	/**
+	 * This method closes the connection to the database once the program is terminated
+	 */
 	public void finish()
 	{
 		try

@@ -12,6 +12,12 @@ public class moviemanager_gui {
 	private long productID;
 	private double amountOwed;
 	private double amountDue;
+	private String username;
+	private int accesslevel;
+	private JPasswordField passwordField_1;
+	private JPasswordField passwordField_2;
+	private JPasswordField passwordField_3;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -23,7 +29,7 @@ public class moviemanager_gui {
 					moviemanager_backend mb = new moviemanager_backend();
 					moviemanager_gui mg = new moviemanager_gui();
 					mg.frame.setVisible(true);
-					mb.finish();
+					System.out.println("Database successfully opened");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -36,6 +42,7 @@ public class moviemanager_gui {
 	 */
 	public moviemanager_gui() {
 		login();
+		//options();
 		//movie();
 		//customer();
 		//checkout();
@@ -48,7 +55,16 @@ public class moviemanager_gui {
 	{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1024, 627);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() 
+		{
+			public void windowClosing(WindowEvent event) 
+			{
+				mb.finish();
+				frame.dispose();
+		        System.exit(0);
+		    }
+		});
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		frame.setVisible(true);
 		mb = new moviemanager_backend();
@@ -86,12 +102,14 @@ public class moviemanager_gui {
 		login.add(passwordField);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.addMouseListener(new MouseAdapter() 
+		btnLogin.addActionListener(new ActionListener() 
 		{
-			public void mouseClicked(MouseEvent arg0) 
+			public void actionPerformed(ActionEvent e)
 			{
 				if(mb.loginCheck(textField.getText(),passwordField.getText()))
 				{
+					username = textField.getText();
+					accesslevel = mb.getAccessLevel(username);
 					frame.setVisible(false);
 					movie();
 				}
@@ -124,15 +142,43 @@ public class moviemanager_gui {
 		frame.getContentPane().add(movie_lookup, "name_197617944856377");
 		movie_lookup.setLayout(null);
 		
-		JButton btnAccounts = new JButton("Home");
-		btnAccounts.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnAccounts.setBounds(21, 11, 107, 32);
-		movie_lookup.add(btnAccounts);
+		JButton btnHome = new JButton("Home");
+		btnHome.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnHome.setBounds(21, 11, 107, 32);
+		movie_lookup.add(btnHome);
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					movie();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JButton btnLogOut = new JButton("Log Out");
 		btnLogOut.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnLogOut.setBounds(874, 11, 107, 32);
 		movie_lookup.add(btnLogOut);
+		btnLogOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					login();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JLabel lblBarCodeNumber = new JLabel("Product ID:");
 		lblBarCodeNumber.setFont(new Font("Calibri", Font.PLAIN, 18));
@@ -242,6 +288,27 @@ public class moviemanager_gui {
 			}
 		});
 		
+		JButton btnRemoveMovie = new JButton("Remove Movie");
+		btnRemoveMovie.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				int dialogButton = JOptionPane.YES_NO_OPTION;
+				int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to REMOVE this movie?","Confirmation",dialogButton);
+				if(dialogResult == JOptionPane.YES_OPTION)
+				{				
+					mb.removeMovie(Integer.parseInt(textField_1.getText()));
+					JOptionPane.showMessageDialog(null, "Movie successfully removed");
+					frame.setVisible(false);
+					movie();
+				}
+				
+			}
+		});
+		btnRemoveMovie.setBounds(721, 308, 127, 92);
+		btnRemoveMovie.setEnabled(false);
+		movie_lookup.add(btnRemoveMovie);
+		
 		JButton btnCheckMovie = new JButton("Look Up");
 		btnCheckMovie.setBounds(499, 109, 107, 29);
 		movie_lookup.add(btnCheckMovie);
@@ -269,6 +336,7 @@ public class moviemanager_gui {
 						btnReturnMovie.setEnabled(true);
 						btnProceed_1.setEnabled(false);
 					}
+					btnRemoveMovie.setEnabled(true);
 				}
 				catch(Exception e1)
 				{
@@ -281,18 +349,97 @@ public class moviemanager_gui {
 		btnOptions.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions.setBounds(143, 11, 107, 32);
 		movie_lookup.add(btnOptions);
+		btnOptions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					options();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JButton btnAddMovie = new JButton("Add Movie");
 		btnAddMovie.setBounds(721, 210, 127, 92);
 		movie_lookup.add(btnAddMovie);
 		
-		JButton btnRemoveMovie = new JButton("Remove Movie");
-		btnRemoveMovie.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		JLabel lblMovieDetails = new JLabel("Movie Details");
+		lblMovieDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblMovieDetails.setBounds(440, 49, 160, 26);
+		movie_lookup.add(lblMovieDetails);
+		btnAddMovie.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnCheckMovie.setEnabled(false);
+					textField_1.setText("" + mb.makeProductID());
+					textField_1.setEditable(false);
+					textPane_2.setEditable(true);
+					textPane_4.setEditable(true);
+					textPane.setEditable(true);
+					textPane_1.setEditable(true);
+					textPane_3.setVisible(false);
+					lblMovieStatus.setVisible(false);
+					btnAddMovie.setVisible(false);
+					btnRemoveMovie.setVisible(false);
+					
+					btnProceed_1.setVisible(false);
+					movie_lookup.remove(btnProceed_1);
+					JButton btnAdd = new JButton("Add");
+					btnAdd.setEnabled(true);
+					btnAdd.setBounds(405, 503, 89, 32);
+					movie_lookup.add(btnAdd);
+					btnAdd.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) 
+						{
+							try
+							{
+								mb.addMovie(Integer.parseInt(textField_1.getText()), textPane_4.getText(), textPane.getText(), textPane_1.getText(), Double.parseDouble(textPane_2.getText()), 1);
+								JOptionPane.showMessageDialog(null, "Movie added successfully!");
+								frame.setVisible(false);
+								movie();
+							}
+							catch(Exception e1)
+							{
+								JOptionPane.showMessageDialog(null, "Please enter valid Movie Details");
+							}
+						}
+					});
+					
+					btnReturnMovie.setVisible(false);
+					movie_lookup.remove(btnReturnMovie);
+					JButton btnCancel = new JButton("Cancel");
+					btnCancel.setEnabled(true);
+					btnCancel.setBounds(506, 503, 113, 32);
+					movie_lookup.add(btnCancel);
+					btnCancel.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) 
+						{
+							try
+							{
+								frame.setVisible(false);
+								movie();
+							}
+							catch(Exception e1)
+							{
+								JOptionPane.showMessageDialog(null, "Movie not returned");
+							}
+						}
+					});
+					
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter a valid Product ID");
+				}
 			}
 		});
-		btnRemoveMovie.setBounds(721, 308, 127, 92);
-		movie_lookup.add(btnRemoveMovie);
 	}
 
 	public void customer()
@@ -306,11 +453,39 @@ public class moviemanager_gui {
 		btnHome_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome_2.setBounds(22, 11, 107, 32);
 		customer_details.add(btnHome_2);
+		btnHome_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					movie();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JButton button_1 = new JButton("Log Out");
 		button_1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_1.setBounds(875, 11, 107, 32);
 		customer_details.add(button_1);
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					login();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JLabel lblCustomerDetails = new JLabel("Customer Details");
 		lblCustomerDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -348,7 +523,7 @@ public class moviemanager_gui {
 		customer_details.add(textPane_7);
 		
 		JButton btnProceed = new JButton("Proceed");
-		btnProceed.setBounds(402, 508, 89, 32);
+		btnProceed.setBounds(354, 508, 89, 32);
 		btnProceed.setEnabled(false);
 		customer_details.add(btnProceed);
 		btnProceed.addActionListener(new ActionListener() {
@@ -367,7 +542,7 @@ public class moviemanager_gui {
 		});
 				
 		JButton button_6 = new JButton("Cancel");
-		button_6.setBounds(521, 508, 89, 32);
+		button_6.setBounds(559, 508, 89, 32);
 		customer_details.add(button_6);
 		button_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
@@ -384,35 +559,24 @@ public class moviemanager_gui {
 			}
 		});
 		
-		JButton button_2 = new JButton("Look Up");
-		button_2.setBounds(503, 134, 107, 29);
-		customer_details.add(button_2);
-		button_2.addActionListener(new ActionListener() {
+		
+		JButton btnRemoveCustomer = new JButton("Remove Customer");
+		btnRemoveCustomer.setEnabled(false);
+		btnRemoveCustomer.setBounds(725, 323, 144, 92);
+		customer_details.add(btnRemoveCustomer);
+		btnRemoveCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
 				{
-					btnProceed.setEnabled(false);
-					String [] data = mb.customerDetails(Integer.parseInt(textField_2.getText()));
-					textPane_4.setText(data[1]);
-					textPane_5.setText(data[2]);
-					if(data[4].equals("0"))
-					{
-						textPane_7.setText("None");
-					}
-					else
-					{
-						textPane_7.setText("Product ID: " + data[4]);
-					}
-					double amount = Double.parseDouble(data[3]);
-					DecimalFormat df = new DecimalFormat("0.00");
-					String ao = df.format(amount);
-					textPane_8.setText(ao);
-					if(data[4].equals("0"))
-					{						
-						amountOwed = Double.parseDouble(ao);
-						btnProceed.setEnabled(true);
-						accNo = Integer.parseInt(data[0]);
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to REMOVE this customer?","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						mb.removeCustomer(Integer.parseInt(textField_2.getText()));
+						JOptionPane.showMessageDialog(null, "Customer successfully removed");
+						frame.setVisible(false);
+						customer();
 					}
 				}
 				catch(Exception e1)
@@ -442,22 +606,188 @@ public class moviemanager_gui {
 		lblMoneyOwed.setBounds(38, 436, 144, 32);
 		customer_details.add(lblMoneyOwed);
 		
+		JButton button_2 = new JButton("Look Up");
+		JButton btnAddCustomer = new JButton("Add Customer");
+		
+		JButton btnEdit = new JButton("Edit");
+		btnEdit.setEnabled(false);
+		btnEdit.setBounds(458, 508, 89, 32);
+		customer_details.add(btnEdit);
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					textField_2.setEditable(false);
+					button_2.setEnabled(false);
+					textPane_4.setEditable(true);
+					textPane_5.setEditable(true);
+					textPane_7.setVisible(false);
+					textPane_8.setVisible(false);
+					lblOutstandingMovies.setVisible(false);
+					lblMoneyOwed.setVisible(false);
+					btnAddCustomer.setVisible(false);
+					btnRemoveCustomer.setVisible(false);
+					btnEdit.setVisible(false);
+					btnProceed.setVisible(false);
+					
+					JButton btnUpdate = new JButton("Update");
+					btnUpdate.setEnabled(true);
+					btnUpdate.setBounds(458, 508, 89, 32);
+					customer_details.add(btnUpdate);
+					btnUpdate.addActionListener(new ActionListener() 
+					{
+						public void actionPerformed(ActionEvent e) 
+						{
+							mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText());
+							JOptionPane.showMessageDialog(null, "Customer details edited successfully");
+							frame.setVisible(false);
+							movie();
+						}
+					});
+					
+					button_6.setVisible(false);
+					JButton btnCancel = new JButton("Cancel");
+					btnCancel.setBounds(559, 508, 89, 32);
+					customer_details.add(btnCancel);
+					btnCancel.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) 
+						{
+							try
+							{
+								frame.setVisible(false);
+								customer();
+							}
+							catch(Exception e1)
+							{
+								JOptionPane.showMessageDialog(null, "An error has occured");
+							}
+						}
+					});
+					
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter a valid Account Number");
+				}
+			}
+		});
+				
+		button_2.setBounds(503, 134, 107, 29);
+		customer_details.add(button_2);
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnProceed.setEnabled(false);
+					String [] data = mb.customerDetails(Integer.parseInt(textField_2.getText()));
+					textPane_4.setText(data[1]);
+					textPane_5.setText(data[2]);
+					if(data[4].equals("0"))
+					{
+						textPane_7.setText("None");
+					}
+					else
+					{
+						textPane_7.setText("Product ID: " + data[4]);
+					}
+					double amount = Double.parseDouble(data[3]);
+					DecimalFormat df = new DecimalFormat("0.00");
+					String ao = df.format(amount);
+					textPane_8.setText(ao);
+					if(data[4].equals("0"))
+					{						
+						amountOwed = Double.parseDouble(ao);
+						btnProceed.setEnabled(true);
+						accNo = Integer.parseInt(data[0]);
+					}
+					btnEdit.setEnabled(true);
+					btnRemoveCustomer.setEnabled(true);
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Please enter a valid Account Number");
+				}
+			}
+		});
+		
 		JButton btnOptions_2 = new JButton("Options");
 		btnOptions_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions_2.setBounds(149, 11, 107, 32);
 		customer_details.add(btnOptions_2);
-		
-		JButton btnAddCustomer = new JButton("Add Customer");
-		btnAddCustomer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnOptions_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					options();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
 			}
 		});
+		
 		btnAddCustomer.setBounds(725, 225, 144, 92);
 		customer_details.add(btnAddCustomer);
-		
-		JButton btnRemoveCustomer = new JButton("Remove Customer");
-		btnRemoveCustomer.setBounds(725, 323, 144, 92);
-		customer_details.add(btnRemoveCustomer);
+		btnAddCustomer.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				textField_2.setText("" + mb.makeAccountNumber());
+				textField_2.setEditable(false);
+				button_2.setEnabled(false);
+				btnAddCustomer.setVisible(false);
+				btnRemoveCustomer.setVisible(false);
+				button_6.setVisible(false);
+				btnEdit.setVisible(false);
+				btnProceed.setVisible(false);
+				textPane_4.setEditable(true);
+				textPane_5.setEditable(true);
+				textPane_7.setVisible(false);
+				textPane_8.setVisible(false);
+				lblOutstandingMovies.setVisible(false);
+				lblMoneyOwed.setVisible(false);
+				
+				JButton btnAdd = new JButton("Add");
+				btnAdd.setEnabled(true);
+				btnAdd.setBounds(458, 508, 89, 32);
+				customer_details.add(btnAdd);
+				btnAdd.addActionListener(new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent e) 
+					{
+						mb.addCustomer(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), 0, 0);
+						JOptionPane.showMessageDialog(null, "Customer added successfully");
+						frame.setVisible(false);
+						customer();
+					}
+				});
+				
+				JButton btnCancel = new JButton("Cancel");
+				btnCancel.setBounds(559, 508, 89, 32);
+				customer_details.add(btnCancel);
+				btnCancel.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) 
+					{
+						try
+						{
+							frame.setVisible(false);
+							customer();
+						}
+						catch(Exception e1)
+						{
+							JOptionPane.showMessageDialog(null, "An error has occured");
+						}
+					}
+				});
+				
+			}
+		});
+
 	}
 
 	public void checkout()
@@ -471,11 +801,39 @@ public class moviemanager_gui {
 		btnHome.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome.setBounds(23, 11, 107, 32);
 		checkout.add(btnHome);
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					movie();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JButton button_4 = new JButton("Log Out");
 		button_4.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_4.setBounds(876, 11, 107, 32);
 		checkout.add(button_4);
+		button_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					login();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JLabel lblCheckOut = new JLabel("Cash Out");
 		lblCheckOut.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -558,6 +916,20 @@ public class moviemanager_gui {
 		btnOptions_1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions_1.setBounds(150, 11, 107, 32);
 		checkout.add(btnOptions_1);
+		btnOptions_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					options();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		JButton button = new JButton("Calculate");
 		button.addActionListener(new ActionListener() 
@@ -587,5 +959,250 @@ public class moviemanager_gui {
 		});
 		button.setBounds(544, 309, 107, 29);
 		checkout.add(button);
+	}
+	
+	public void options()
+	{
+		initialize();
+		JPanel options = new JPanel();
+		frame.getContentPane().add(options, "name_197615222529489");
+		options.setLayout(null);
+		
+		JButton button = new JButton("Home");
+		button.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button.setBounds(18, 16, 107, 32);
+		options.add(button);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					movie();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
+		JButton button_1 = new JButton("Options");
+		button_1.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button_1.setBounds(144, 16, 107, 32);
+		options.add(button_1);
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					options();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
+		JLabel lblOptions = new JLabel("Options");
+		lblOptions.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblOptions.setBounds(446, 62, 94, 26);
+		options.add(lblOptions);
+		
+		JButton button_2 = new JButton("Log Out");
+		button_2.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button_2.setBounds(873, 16, 107, 32);
+		options.add(button_2);
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					frame.setVisible(false);
+					login();
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
+		JButton btnCustomerReports = new JButton("Customer Report");
+		btnCustomerReports.setEnabled(false);
+		JButton btnChangePassword = new JButton("Change Password");
+		
+		JButton btnStockReports = new JButton("Stock Report");
+		btnStockReports.setEnabled(false);
+		btnStockReports.setBounds(400, 153, 175, 92);
+		options.add(btnStockReports);
+		btnStockReports.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnStockReports.setVisible(false);
+					btnCustomerReports.setVisible(false);
+					btnChangePassword.setVisible(false);
+					lblOptions.setVisible(false);
+					JLabel lblStock = new JLabel("Stock Report");
+					lblStock.setFont(new Font("Tahoma", Font.BOLD, 20));
+					lblStock.setBounds(419, 61, 203, 26);
+					options.add(lblStock);
+					options.repaint();
+					
+					String [] columnNames = new String [] {"Product ID", "Movie Name", "Genre", "Category", "Price", "Available"};
+					JScrollPane scrollPane = new JScrollPane();
+					scrollPane.setBounds(41, 102, 917, 455);
+					options.add(scrollPane);
+					table = new JTable(mb.reports(2), columnNames);
+					scrollPane.setViewportView(table);
+					table.setRowSelectionAllowed(false);
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Report could not be generated");
+				}
+			}
+		});
+		
+		if(accesslevel == 1)
+		{
+			btnStockReports.setEnabled(true);
+			btnCustomerReports.setEnabled(true);
+		}
+		
+		btnCustomerReports.setBounds(400, 257, 175, 92);
+		options.add(btnCustomerReports);
+		btnCustomerReports.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnStockReports.setVisible(false);
+					btnCustomerReports.setVisible(false);
+					btnChangePassword.setVisible(false);
+					lblOptions.setVisible(false);
+					JLabel lblCustomer = new JLabel("Customer Report");
+					lblCustomer.setFont(new Font("Tahoma", Font.BOLD, 20));
+					lblCustomer.setBounds(394, 55, 203, 26);
+					options.add(lblCustomer);
+					options.repaint();
+					
+					String [] columnNames = new String [] {"Account Number", "Full Name", "Address", "Amount Outstanding", "Product ID"};
+					JScrollPane scrollPane = new JScrollPane();
+					scrollPane.setBounds(41, 102, 917, 455);
+					options.add(scrollPane);
+					table = new JTable(mb.reports(1), columnNames);
+					scrollPane.setViewportView(table);
+					table.setRowSelectionAllowed(false);
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Report could not be generated");
+				}
+			}
+		});
+		
+		btnChangePassword.setBounds(400, 361, 175, 92);
+		options.add(btnChangePassword);
+		btnChangePassword.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnStockReports.setVisible(false);
+					btnCustomerReports.setVisible(false);
+					btnChangePassword.setVisible(false);
+					lblOptions.setVisible(false);
+					JLabel lblChange = new JLabel("Change Password");
+					lblChange.setFont(new Font("Tahoma", Font.BOLD, 20));
+					lblChange.setBounds(419, 61, 203, 26);
+					options.add(lblChange);
+					options.repaint();
+					
+					JLabel lblNewLabel = new JLabel("Current Password:");
+					lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+					lblNewLabel.setBounds(239, 185, 173, 32);
+					options.add(lblNewLabel);
+					
+					JLabel lblNewPassword = new JLabel("New Password:");
+					lblNewPassword.setFont(new Font("Tahoma", Font.PLAIN, 20));
+					lblNewPassword.setBounds(239, 241, 173, 32);
+					options.add(lblNewPassword);
+					
+					JLabel lblRetypeNewPassword = new JLabel("Retype New Password:");
+					lblRetypeNewPassword.setFont(new Font("Tahoma", Font.PLAIN, 20));
+					lblRetypeNewPassword.setBounds(239, 300, 210, 32);
+					options.add(lblRetypeNewPassword);
+					
+					passwordField_1 = new JPasswordField();
+					passwordField_1.setBounds(496, 185, 189, 32);
+					options.add(passwordField_1);
+					
+					passwordField_2 = new JPasswordField();
+					passwordField_2.setBounds(496, 241, 189, 32);
+					options.add(passwordField_2);
+					
+					passwordField_3 = new JPasswordField();
+					passwordField_3.setBounds(496, 300, 189, 32);
+					options.add(passwordField_3);
+					
+					JButton btnChange = new JButton("Change ");
+					btnChange.setBounds(394, 424, 90, 28);
+					options.add(btnChange);
+					btnChange.addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							if(mb.loginCheck(username,passwordField_1.getText()))
+							{
+								if(passwordField_2.getText().equals(passwordField_3.getText()))
+								{
+									mb.changePassword(username, passwordField_2.getText());
+									JOptionPane.showMessageDialog(null, "Password changed successfully!");
+									frame.setVisible(false);
+									options();
+								}
+								else
+								{
+									JOptionPane.showMessageDialog(null, "The passwords entered did not match");
+								}
+							}
+							else
+							{
+								JOptionPane.showMessageDialog(null, "The current password is incorrect");
+								passwordField_1.setText("");
+								passwordField_2.setText("");
+								passwordField_3.setText("");
+							}
+						}
+					});
+					
+					JButton btnClear_1 = new JButton("Clear");
+					btnClear_1.setBounds(524, 424, 90, 28);
+					options.add(btnClear_1);
+					btnClear_1.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) 
+						{
+							passwordField_1.setText("");
+							passwordField_2.setText("");
+							passwordField_3.setText("");
+						}
+					});
+					
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect current password entered");
+				}
+			}
+		}); 
+	
 	}
 }
