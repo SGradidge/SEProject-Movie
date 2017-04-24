@@ -1,12 +1,14 @@
 import java.sql.*;
-
+import java.text.*;
 import java.util.*;
-
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.security.*;
    
 public class moviemanager_backend 
 {
 	private Connection con;
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
  
     public moviemanager_backend()
     {
@@ -117,7 +119,7 @@ public class moviemanager_backend
 			}
 			else
 			{
-				size = 6;
+				size = 7;
 				data = new String[1000][size]; 
 				Statement stmt = con.createStatement();
 				rs = stmt.executeQuery("SELECT * FROM Movie_Details");
@@ -199,8 +201,44 @@ public class moviemanager_backend
 	{
 		try
 		{
-			String sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Product_ID = ?";
+			String sql = "SELECT Date_Rented FROM Movie_Details WHERE Product_ID = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setLong(1,productID);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) 
+			{
+			    String date = rs.getString(1);
+			    String [] dateHolder = date.split("/");
+			    int year = Integer.parseInt(dateHolder[0]) - 1900;
+			    int month = Integer.parseInt(dateHolder[1]) - 1;
+			    int day = Integer.parseInt(dateHolder[2]);
+			    Date rentDate = new Date(year,month,day);
+			    Date currentDate = new Date();
+			    long diff = currentDate.getTime() - rentDate.getTime();
+			    long time = diff / (1000*60*60*24);
+			    if(time > 1)
+			    {
+			    	int amount = 0;
+			    	sql = "SELECT Price FROM Movie_Details WHERE Product_ID = ?";
+					pstmt = con.prepareStatement(sql);
+					pstmt.setLong(1,productID);
+					rs = pstmt.executeQuery();
+					while(rs.next())
+					{
+						amount = rs.getInt(1);
+					}
+					
+					amount = amount * (int)(time - 1);
+			    	sql = "UPDATE Customer_Details SET Amount_Outstanding = ? WHERE Product_ID = ?";
+					pstmt = con.prepareStatement(sql);
+					pstmt.setInt(1,amount);
+					pstmt.setLong(2,productID);
+					int nrows = pstmt.executeUpdate();
+			    }
+			}
+			
+			sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Product_ID = ?";
+			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1,0);
 			pstmt.setLong(2,productID);
 			int nrows = pstmt.executeUpdate();
@@ -208,6 +246,12 @@ public class moviemanager_backend
 			sql = "UPDATE Movie_Details SET Available = ? WHERE Product_ID = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1,1);
+			pstmt.setLong(2,productID);
+			nrows = pstmt.executeUpdate();
+			
+			sql = "UPDATE Movie_Details SET Date_Rented = ? WHERE Product_ID = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1,"");
 			pstmt.setLong(2,productID);
 			nrows = pstmt.executeUpdate();
 		}
@@ -226,16 +270,19 @@ public class moviemanager_backend
 	{
 		try
 		{
+			Date currentdate = new Date();
+			String date = dateFormat.format(currentdate);
 			String sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Account_Number = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setLong(1,productID);
 			pstmt.setInt(2,accNo);
 			int nrows = pstmt.executeUpdate();
 			
-			sql = "UPDATE Movie_Details SET Available = ? WHERE Product_ID = ?";
+			sql = "UPDATE Movie_Details SET Available = ?, Date_Rented = ? WHERE Product_ID = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1,0);
-			pstmt.setLong(2,productID);
+			pstmt.setString(2,date);
+			pstmt.setLong(3,productID);
 			nrows = pstmt.executeUpdate();
 			
 			sql = "UPDATE Customer_Details SET Amount_Outstanding = ? WHERE Account_Number = ?";

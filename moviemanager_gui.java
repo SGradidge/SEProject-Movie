@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
+import java.text.*;
 
 
 public class moviemanager_gui {
@@ -18,6 +18,8 @@ public class moviemanager_gui {
 	private JPasswordField passwordField_2;
 	private JPasswordField passwordField_3;
 	private JTable table;
+
+
 
 	/**
 	 * Launch the application.
@@ -1035,7 +1037,6 @@ public class moviemanager_gui {
 		JButton btnChangePassword = new JButton("Change Password");
 		
 		JButton btnStockReports = new JButton("Stock Report");
-		btnStockReports.setEnabled(false);
 		btnStockReports.setBounds(400, 153, 175, 92);
 		options.add(btnStockReports);
 		btnStockReports.addActionListener(new ActionListener() 
@@ -1054,7 +1055,7 @@ public class moviemanager_gui {
 					options.add(lblStock);
 					options.repaint();
 					
-					String [] columnNames = new String [] {"Product ID", "Movie Name", "Genre", "Category", "Price", "Available"};
+					String [] columnNames = new String [] {"Product ID", "Movie Name", "Genre", "Category", "Price", "Available", "Date Rented"};
 					JScrollPane scrollPane = new JScrollPane();
 					scrollPane.setBounds(41, 102, 917, 455);
 					options.add(scrollPane);
@@ -1071,7 +1072,6 @@ public class moviemanager_gui {
 		
 		if(accesslevel == 1)
 		{
-			btnStockReports.setEnabled(true);
 			btnCustomerReports.setEnabled(true);
 		}
 		
