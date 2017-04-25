@@ -56,6 +56,7 @@ public class moviemanager_gui {
 	private void initialize() 
 	{
 		frame = new JFrame();
+		frame.setBackground(Color.LIGHT_GRAY);
 		frame.setBounds(100, 100, 1024, 627);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() 
@@ -79,28 +80,30 @@ public class moviemanager_gui {
 		frame.getContentPane().add(login, "name_197615222529489");
 		login.setLayout(null);
 		
-		JLabel lblMovieManagementSoftware = new JLabel("Movie Management Software");
+		JLabel lblMovieManagementSoftware = new JLabel("");
+		Image img = new ImageIcon("img/login.png").getImage();
+		lblMovieManagementSoftware.setIcon(new ImageIcon(img));
 		lblMovieManagementSoftware.setFont(new Font("Calibri", Font.BOLD | Font.ITALIC, 30));
-		lblMovieManagementSoftware.setBounds(314, 70, 399, 50);
+		lblMovieManagementSoftware.setBounds(274, 57, 439, 122);
 		login.add(lblMovieManagementSoftware);
 		
 		JLabel lblUsername = new JLabel("Username:");
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblUsername.setBounds(329, 208, 115, 37);
+		lblUsername.setBounds(329, 235, 115, 37);
 		login.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblPassword.setBounds(329, 263, 115, 37);
+		lblPassword.setBounds(329, 289, 115, 37);
 		login.add(lblPassword);
 		
 		JTextField textField = new JTextField();
-		textField.setBounds(454, 214, 208, 32);
+		textField.setBounds(454, 241, 208, 32);
 		login.add(textField);
 		textField.setColumns(10);
 		
 		JPasswordField passwordField = new JPasswordField();
-		passwordField.setBounds(454, 269, 208, 32);
+		passwordField.setBounds(454, 295, 208, 32);
 		login.add(passwordField);
 		
 		JButton btnLogin = new JButton("Login");
@@ -122,7 +125,7 @@ public class moviemanager_gui {
 				}
 			}
 		});
-		btnLogin.setBounds(454, 334, 89, 32);
+		btnLogin.setBounds(457, 356, 89, 32);
 		login.add(btnLogin);
 		
 		JButton btnClear = new JButton("Clear");
@@ -133,8 +136,12 @@ public class moviemanager_gui {
 				passwordField.setText("");
 			}
 		});
-		btnClear.setBounds(573, 334, 89, 32);
+		btnClear.setBounds(573, 356, 89, 32);
 		login.add(btnClear);
+		
+		JLabel lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setBounds(83, 172, 186, 173);
+		login.add(lblNewLabel_1);
 	}
 	
 	public void movie()
@@ -374,6 +381,13 @@ public class moviemanager_gui {
 		lblMovieDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblMovieDetails.setBounds(440, 49, 160, 26);
 		movie_lookup.add(lblMovieDetails);
+		
+		JLabel label = new JLabel("");
+		Image img = new ImageIcon("img/background.png").getImage();
+		label.setIcon(new ImageIcon(img));
+		
+		label.setBounds(106, 102, 724, 421);
+		movie_lookup.add(label);
 		btnAddMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -382,6 +396,10 @@ public class moviemanager_gui {
 					btnCheckMovie.setEnabled(false);
 					textField_1.setText("" + mb.makeProductID());
 					textField_1.setEditable(false);
+					textPane_2.setText("");
+					textPane_4.setText("");
+					textPane.setText("");
+					textPane_1.setText("");
 					textPane_2.setEditable(true);
 					textPane_4.setEditable(true);
 					textPane.setEditable(true);
@@ -519,11 +537,6 @@ public class moviemanager_gui {
 		textPane_8.setBounds(176, 436, 304, 32);
 		customer_details.add(textPane_8);
 		
-		JTextPane textPane_7 = new JTextPane();
-		textPane_7.setEditable(false);
-		textPane_7.setBounds(176, 351, 304, 74);
-		customer_details.add(textPane_7);
-		
 		JButton btnProceed = new JButton("Proceed");
 		btnProceed.setBounds(354, 508, 89, 32);
 		btnProceed.setEnabled(false);
@@ -600,7 +613,7 @@ public class moviemanager_gui {
 		
 		JLabel lblOutstandingMovies = new JLabel("Movies owed:");
 		lblOutstandingMovies.setFont(new Font("Calibri", Font.PLAIN, 18));
-		lblOutstandingMovies.setBounds(38, 351, 144, 64);
+		lblOutstandingMovies.setBounds(38, 380, 144, 64);
 		customer_details.add(lblOutstandingMovies);
 		
 		JLabel lblMoneyOwed = new JLabel("Money owed:");
@@ -610,6 +623,21 @@ public class moviemanager_gui {
 		
 		JButton button_2 = new JButton("Look Up");
 		JButton btnAddCustomer = new JButton("Add Customer");
+		
+		JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setBounds(176, 352, 304, 32);
+		customer_details.add(textPane);
+		
+		JTextPane textPane_1 = new JTextPane();
+		textPane_1.setEditable(false);
+		textPane_1.setBounds(176, 396, 304, 32);
+		customer_details.add(textPane_1);
+		
+		JLabel lblContactNumber = new JLabel("Contact Number:");
+		lblContactNumber.setFont(new Font("Calibri", Font.PLAIN, 18));
+		lblContactNumber.setBounds(38, 337, 144, 64);
+		customer_details.add(lblContactNumber);
 		
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.setEnabled(false);
@@ -624,7 +652,8 @@ public class moviemanager_gui {
 					button_2.setEnabled(false);
 					textPane_4.setEditable(true);
 					textPane_5.setEditable(true);
-					textPane_7.setVisible(false);
+					textPane_1.setVisible(false);
+					textPane.setEditable(true);
 					textPane_8.setVisible(false);
 					lblOutstandingMovies.setVisible(false);
 					lblMoneyOwed.setVisible(false);
@@ -641,7 +670,7 @@ public class moviemanager_gui {
 					{
 						public void actionPerformed(ActionEvent e) 
 						{
-							mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText());
+							mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), textPane.getText());
 							JOptionPane.showMessageDialog(null, "Customer details edited successfully");
 							frame.setVisible(false);
 							movie();
@@ -686,19 +715,20 @@ public class moviemanager_gui {
 					String [] data = mb.customerDetails(Integer.parseInt(textField_2.getText()));
 					textPane_4.setText(data[1]);
 					textPane_5.setText(data[2]);
-					if(data[4].equals("0"))
+					textPane.setText(data[3]);
+					if(data[5].equals("0"))
 					{
-						textPane_7.setText("None");
+						textPane_1.setText("None");
 					}
 					else
 					{
-						textPane_7.setText("Product ID: " + data[4]);
+						textPane_1.setText("Product ID: " + data[5]);
 					}
-					double amount = Double.parseDouble(data[3]);
+					double amount = Double.parseDouble(data[4]);
 					DecimalFormat df = new DecimalFormat("0.00");
 					String ao = df.format(amount);
 					textPane_8.setText(ao);
-					if(data[4].equals("0"))
+					if(data[5].equals("0"))
 					{						
 						amountOwed = Double.parseDouble(ao);
 						btnProceed.setEnabled(true);
@@ -735,6 +765,13 @@ public class moviemanager_gui {
 		
 		btnAddCustomer.setBounds(725, 225, 144, 92);
 		customer_details.add(btnAddCustomer);
+		
+		JLabel label = new JLabel("");
+		Image img = new ImageIcon("img/background.png").getImage();
+		label.setIcon(new ImageIcon(img));
+		label.setBounds(103, 84, 724, 421);
+		customer_details.add(label);
+		
 		btnAddCustomer.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -747,9 +784,13 @@ public class moviemanager_gui {
 				button_6.setVisible(false);
 				btnEdit.setVisible(false);
 				btnProceed.setVisible(false);
+				textPane_4.setText("");
+				textPane_5.setText("");
+				textPane.setText("");
 				textPane_4.setEditable(true);
 				textPane_5.setEditable(true);
-				textPane_7.setVisible(false);
+				textPane.setEditable(true);
+				textPane_1.setVisible(false);
 				textPane_8.setVisible(false);
 				lblOutstandingMovies.setVisible(false);
 				lblMoneyOwed.setVisible(false);
@@ -762,7 +803,7 @@ public class moviemanager_gui {
 				{
 					public void actionPerformed(ActionEvent e) 
 					{
-						mb.addCustomer(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), 0, 0);
+						mb.addCustomer(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(),textPane.getText(), 0, 0);
 						JOptionPane.showMessageDialog(null, "Customer added successfully");
 						frame.setVisible(false);
 						customer();
@@ -961,6 +1002,12 @@ public class moviemanager_gui {
 		});
 		button.setBounds(544, 309, 107, 29);
 		checkout.add(button);
+		
+		JLabel label = new JLabel("");
+		Image img = new ImageIcon("img/background.png").getImage();
+		label.setIcon(new ImageIcon(img));
+		label.setBounds(103, 112, 724, 421);
+		checkout.add(label);
 	}
 	
 	public void options()
@@ -1093,7 +1140,7 @@ public class moviemanager_gui {
 					options.add(lblCustomer);
 					options.repaint();
 					
-					String [] columnNames = new String [] {"Account Number", "Full Name", "Address", "Amount Outstanding", "Product ID"};
+					String [] columnNames = new String [] {"Account Number", "Full Name", "Address", "Contact Number" , "Amount Outstanding", "Product ID"};
 					JScrollPane scrollPane = new JScrollPane();
 					scrollPane.setBounds(41, 102, 917, 455);
 					options.add(scrollPane);
@@ -1110,6 +1157,12 @@ public class moviemanager_gui {
 		
 		btnChangePassword.setBounds(400, 361, 175, 92);
 		options.add(btnChangePassword);
+		
+		JLabel label = new JLabel("");
+		Image img = new ImageIcon("img/background.png").getImage();
+		label.setIcon(new ImageIcon(img));
+		label.setBounds(93, 111, 724, 421);
+		options.add(label);
 		btnChangePassword.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 

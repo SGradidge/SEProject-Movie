@@ -112,7 +112,7 @@ public class moviemanager_backend
 		{			
 			if(report == 1)
 			{
-				size = 5;
+				size = 6;
 				data = new String[1000][size]; 
 				Statement stmt = con.createStatement();
 				rs = stmt.executeQuery("SELECT * FROM Customer_Details");
@@ -157,7 +157,7 @@ public class moviemanager_backend
 	{
 			try
 			{
-				String sql = "INSERT INTO Movie_Details VALUES(?,?,?,?,?,?)";
+				String sql = "INSERT INTO Movie_Details VALUES(?,?,?,?,?,?,?)";
 				PreparedStatement pstmt = con.prepareStatement(sql);
 				pstmt.setInt(1, productID);
 				pstmt.setString(2, movieName);
@@ -165,6 +165,7 @@ public class moviemanager_backend
 				pstmt.setString(4, category);
 				pstmt.setDouble(5, price);
 				pstmt.setInt(6, status);
+				pstmt.setString(7, "");
 				int nrows = pstmt.executeUpdate();
 			}
 			catch(Exception e)
@@ -304,14 +305,14 @@ public class moviemanager_backend
 	 */
 	public String [] customerDetails(int accNo)
 	{
-		String [] data = new String[5];
+		String [] data = new String[6];
 		try
 		{
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Customer_Details WHERE Account_Number = " + accNo + "");
 			while (rs.next()) 
 			{
-			    for(int i = 1; i < 6; i++)
+			    for(int i = 1; i < 7; i++)
 			    {
 			    	data[i-1] = rs.getString(i);
 			    }
@@ -359,17 +360,18 @@ public class moviemanager_backend
          * @param amount The amount still due by the customer
          * @param productID The product ID linked to the customer (that was rented) 
          */
-	public void addCustomer(int accNo, String fullName, String address, double amount, int productID)
+	public void addCustomer(int accNo, String fullName, String address, String contactNumber, double amount, int productID)
 	{
 		try
 		{
-                    String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?)";
+                    String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Contact_Number, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?,?)";
                     PreparedStatement pstmt = con.prepareStatement(sql);
                     pstmt.setInt(1, accNo);
                     pstmt.setString(2, fullName);
                     pstmt.setString(3, address);
-                    pstmt.setDouble(4, amount);
-                    pstmt.setInt(5, productID);
+                    pstmt.setString(4, contactNumber);
+                    pstmt.setDouble(5, amount);
+                    pstmt.setInt(6, productID);
                     pstmt.execute();
 		}
 		catch(Exception e)
@@ -404,15 +406,16 @@ public class moviemanager_backend
 	 * @param address Address of the customer
 	 * @param amount The customers outstanding balance
 	 */
-	public void editCustomerDetails(int accNo, String fullName, String address)
+	public void editCustomerDetails(int accNo, String fullName, String address, String contactNumber)
 	{
 		try
 		{
-			String sql = "UPDATE Customer_Details SET Full_Name = ?, Address = ? WHERE Account_Number = ?";
+			String sql = "UPDATE Customer_Details SET Full_Name = ?, Address = ?, Contact_Number = ? WHERE Account_Number = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1,fullName);
 			pstmt.setString(2,address);
-			pstmt.setInt(3,accNo);
+			pstmt.setString(3,contactNumber);
+			pstmt.setInt(4,accNo);
 			int nrows = pstmt.executeUpdate();
 			customerDetails(1);
 		}
