@@ -1,6 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.File;
 import java.text.*;
 
 
@@ -10,8 +11,12 @@ public class moviemanager_gui {
 	private moviemanager_backend mb;
 	private int accNo;
 	private long productID;
+	private long [] mproductID;
+	private String accProductID;
+	private int size = 0;
 	private double amountOwed;
 	private double amountDue;
+	private double totalAmount = 0;
 	private String username;
 	private int accesslevel;
 	private JPasswordField passwordField_1;
@@ -151,6 +156,12 @@ public class moviemanager_gui {
 		frame.getContentPane().add(movie_lookup, "name_197617944856377");
 		movie_lookup.setLayout(null);
 		
+		mproductID = new long [5];
+		
+		JLabel lblNewLabel_2 = new JLabel("No. of movies selected: 0");
+		lblNewLabel_2.setBounds(712, 127, 169, 32);
+		movie_lookup.add(lblNewLabel_2);
+		
 		JButton btnHome = new JButton("Home");
 		btnHome.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome.setBounds(21, 11, 107, 32);
@@ -251,7 +262,7 @@ public class moviemanager_gui {
 		
 		JButton btnProceed_1 = new JButton("Take Out");
 		btnProceed_1.setEnabled(false);
-		btnProceed_1.setBounds(405, 503, 89, 32);
+		btnProceed_1.setBounds(341, 503, 89, 32);
 		movie_lookup.add(btnProceed_1);
 		btnProceed_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
@@ -270,7 +281,7 @@ public class moviemanager_gui {
 		
 		JButton btnReturnMovie = new JButton("Return Movie");
 		btnReturnMovie.setEnabled(false);
-		btnReturnMovie.setBounds(506, 503, 113, 32);
+		btnReturnMovie.setBounds(541, 503, 113, 32);
 		movie_lookup.add(btnReturnMovie);
 		btnReturnMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
@@ -318,6 +329,8 @@ public class moviemanager_gui {
 		btnRemoveMovie.setEnabled(false);
 		movie_lookup.add(btnRemoveMovie);
 		
+		JButton btnAddMovie_1 = new JButton("Add");
+		
 		JButton btnCheckMovie = new JButton("Look Up");
 		btnCheckMovie.setBounds(499, 109, 107, 29);
 		movie_lookup.add(btnCheckMovie);
@@ -336,14 +349,17 @@ public class moviemanager_gui {
 					if(data[5].equals("1"))
 					{
 						textPane_3.setText("Available");
-						btnProceed_1.setEnabled(true);
 						btnReturnMovie.setEnabled(false);
+						btnAddMovie_1.setEnabled(true);
 					}
 					else
 					{
 						textPane_3.setText("Not Available");
-						btnReturnMovie.setEnabled(true);
-						btnProceed_1.setEnabled(false);
+						if(size < 1)
+						{
+							btnReturnMovie.setEnabled(true);
+						}
+						btnAddMovie_1.setEnabled(false);
 					}
 					btnRemoveMovie.setEnabled(true);
 				}
@@ -373,7 +389,7 @@ public class moviemanager_gui {
 			}
 		});
 		
-		JButton btnAddMovie = new JButton("Add Movie");
+		JButton btnAddMovie = new JButton("New Movie");
 		btnAddMovie.setBounds(721, 210, 127, 92);
 		movie_lookup.add(btnAddMovie);
 		
@@ -388,6 +404,83 @@ public class moviemanager_gui {
 		
 		label.setBounds(106, 102, 724, 421);
 		movie_lookup.add(label);
+		
+		btnAddMovie_1.setEnabled(false);
+		btnAddMovie_1.setBounds(440, 503, 89, 32);
+		movie_lookup.add(btnAddMovie_1);
+		btnAddMovie_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					btnProceed_1.setEnabled(true);
+					textPane_4.setText("");
+					textPane.setText("");
+					textPane_1.setText("");
+					textPane_2.setText("");
+					textPane_3.setText("");
+					boolean isSelected = false;
+					for(int i = 0; i < 5; i++)
+					{
+						if(mproductID[i] == Long.parseLong(textField_1.getText()))
+						{
+							isSelected = true;
+						}
+					}
+					if(isSelected)
+					{
+						JOptionPane.showMessageDialog(null,"That movie has already been added to the list");
+						textField_1.setText("");
+					}
+					else
+					{
+						mproductID[size] = Long.parseLong(textField_1.getText());
+						if(size < 1)
+						{
+							accProductID = textField_1.getText();
+						}
+						else
+						{
+							accProductID = accProductID + " " + textField_1.getText();
+							System.out.println(accProductID);
+						}
+						size++;
+						lblNewLabel_2.setText("No. of movies selected: " + size);
+						textField_1.setText("");
+						totalAmount = totalAmount + amountDue; 
+					}
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
+		JButton btnHelp = new JButton("Help");
+		btnHelp.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnHelp.setBounds(750, 11, 107, 32);
+		movie_lookup.add(btnHelp);
+		btnHelp.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					if (Desktop.isDesktopSupported()) 
+					{
+						File myFile = new File("User Guide.pdf");
+			            Desktop.getDesktop().open(myFile);
+			        }
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
+		
 		btnAddMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -407,14 +500,15 @@ public class moviemanager_gui {
 					textPane_3.setVisible(false);
 					lblMovieStatus.setVisible(false);
 					btnAddMovie.setVisible(false);
+					btnAddMovie_1.setVisible(false);
 					btnRemoveMovie.setVisible(false);
-					
 					btnProceed_1.setVisible(false);
 					movie_lookup.remove(btnProceed_1);
 					JButton btnAdd = new JButton("Add");
 					btnAdd.setEnabled(true);
 					btnAdd.setBounds(405, 503, 89, 32);
 					movie_lookup.add(btnAdd);
+					movie_lookup.repaint();
 					btnAdd.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) 
 						{
@@ -716,23 +810,20 @@ public class moviemanager_gui {
 					textPane_4.setText(data[1]);
 					textPane_5.setText(data[2]);
 					textPane.setText(data[3]);
-					if(data[5].equals("0"))
-					{
-						textPane_1.setText("None");
-					}
-					else
-					{
-						textPane_1.setText("Product ID: " + data[5]);
-					}
 					double amount = Double.parseDouble(data[4]);
 					DecimalFormat df = new DecimalFormat("0.00");
 					String ao = df.format(amount);
 					textPane_8.setText(ao);
-					if(data[5].equals("0"))
-					{						
+					if(data[5].equals("0") || data[5].equals("") || data[5].equals(" "))
+					{	
+						textPane_1.setText("None");
 						amountOwed = Double.parseDouble(ao);
 						btnProceed.setEnabled(true);
 						accNo = Integer.parseInt(data[0]);
+					}
+					else
+					{
+						textPane_1.setText("Product ID: " + data[5]);
 					}
 					btnEdit.setEnabled(true);
 					btnRemoveCustomer.setEnabled(true);
@@ -771,6 +862,29 @@ public class moviemanager_gui {
 		label.setIcon(new ImageIcon(img));
 		label.setBounds(103, 84, 724, 421);
 		customer_details.add(label);
+		
+		JButton button = new JButton("Help");
+		button.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button.setBounds(751, 11, 107, 32);
+		customer_details.add(button);
+		button.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					if (Desktop.isDesktopSupported()) 
+					{
+						File myFile = new File("User Guide.pdf");
+			            Desktop.getDesktop().open(myFile);
+			        }
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 		
 		btnAddCustomer.addActionListener(new ActionListener() 
 		{
@@ -893,7 +1007,7 @@ public class moviemanager_gui {
 		textPane.setBounds(178, 194, 304, 32);
 		checkout.add(textPane);
 		DecimalFormat df = new DecimalFormat("0.00");
-		String ao = df.format((amountDue+amountOwed));
+		String ao = df.format((totalAmount+amountOwed));
 		textPane.setText(ao);
 		
 		JLabel lblAmountReceived = new JLabel("Amount Received:");
@@ -925,8 +1039,9 @@ public class moviemanager_gui {
 			{
 				try
 				{
-					mb.rentMovie(productID, accNo);
+					mb.rentMovie(mproductID, accNo, accProductID);
 					JOptionPane.showMessageDialog(null, "Movie rented successfully");
+					size = 0;
 					frame.setVisible(false);
 					movie();
 				}
@@ -981,7 +1096,7 @@ public class moviemanager_gui {
 			{
 				try
 				{
-					double change = Double.parseDouble(textField_4.getText()) - (amountDue+amountOwed);
+					double change = Double.parseDouble(textField_4.getText()) - (totalAmount+amountOwed);
 					if(change >= 0)
 					{
 						DecimalFormat df = new DecimalFormat("0.00");
@@ -1008,6 +1123,29 @@ public class moviemanager_gui {
 		label.setIcon(new ImageIcon(img));
 		label.setBounds(103, 112, 724, 421);
 		checkout.add(label);
+		
+		JButton button_1 = new JButton("Help");
+		button_1.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button_1.setBounds(753, 11, 107, 32);
+		checkout.add(button_1);
+		button_1.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					if (Desktop.isDesktopSupported()) 
+					{
+						File myFile = new File("User Guide.pdf");
+			            Desktop.getDesktop().open(myFile);
+			        }
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
 	}
 	
 	public void options()
@@ -1102,7 +1240,7 @@ public class moviemanager_gui {
 					options.add(lblStock);
 					options.repaint();
 					
-					String [] columnNames = new String [] {"Product ID", "Movie Name", "Genre", "Category", "Price", "Available", "Date Rented"};
+					String [] columnNames = new String [] {"Product ID", "Movie Name", "Genre", "Category", "Price", "Available", "Date Rented", "Account Number"};
 					JScrollPane scrollPane = new JScrollPane();
 					scrollPane.setBounds(41, 102, 917, 455);
 					options.add(scrollPane);
@@ -1163,6 +1301,30 @@ public class moviemanager_gui {
 		label.setIcon(new ImageIcon(img));
 		label.setBounds(93, 111, 724, 421);
 		options.add(label);
+		
+		JButton button_3 = new JButton("Help");
+		button_3.setFont(new Font("Tahoma", Font.BOLD, 15));
+		button_3.setBounds(750, 16, 107, 32);
+		options.add(button_3);
+		button_3.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				try
+				{
+					if (Desktop.isDesktopSupported()) 
+					{
+						File myFile = new File("User Guide.pdf");
+			            Desktop.getDesktop().open(myFile);
+			        }
+				}
+				catch(Exception e1)
+				{
+					JOptionPane.showMessageDialog(null, "An error has occured");
+				}
+			}
+		});
+		
 		btnChangePassword.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
