@@ -371,15 +371,16 @@ public class moviemanager_gui
 						textPane_3.setText("Available");
 						btnReturnMovie.setEnabled(false);
 						btnAddMovie_1.setEnabled(true);
+						btnRemoveMovie.setEnabled(true);
 					}
 					else
 					{
 						textPane_3.setText("Not Available");
+						btnRemoveMovie.setEnabled(false);
 						if(size < 1)
 						{
 							btnReturnMovie.setEnabled(true);
 							btnAddMovie.setEnabled(true);
-							btnRemoveMovie.setEnabled(true);
 						}
 						btnAddMovie_1.setEnabled(false);
 					}
