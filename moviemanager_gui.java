@@ -174,6 +174,7 @@ public class moviemanager_gui
 					if(dialogResult == JOptionPane.YES_OPTION)
 					{				
 						size = 0;
+						totalAmount = 0;
 						frame.setVisible(false);
 						movie();
 					}
@@ -345,6 +346,10 @@ public class moviemanager_gui
 		
 		JButton btnAddMovie_1 = new JButton("Add");
 		
+		JButton btnAddMovie = new JButton("New Movie");
+		btnAddMovie.setBounds(721, 210, 127, 92);
+		movie_lookup.add(btnAddMovie);
+		
 		JButton btnCheckMovie = new JButton("Look Up");
 		btnCheckMovie.setBounds(499, 109, 107, 29);
 		movie_lookup.add(btnCheckMovie);
@@ -373,10 +378,11 @@ public class moviemanager_gui
 						if(size < 1)
 						{
 							btnReturnMovie.setEnabled(true);
+							btnAddMovie.setEnabled(true);
+							btnRemoveMovie.setEnabled(true);
 						}
 						btnAddMovie_1.setEnabled(false);
 					}
-					btnRemoveMovie.setEnabled(true);
 				}
 				catch(Exception e1)
 				{
@@ -405,10 +411,6 @@ public class moviemanager_gui
 			}
 		});
 		
-		JButton btnAddMovie = new JButton("New Movie");
-		btnAddMovie.setBounds(721, 210, 127, 92);
-		movie_lookup.add(btnAddMovie);
-		
 		JLabel lblMovieDetails = new JLabel("Movie Details");
 		lblMovieDetails.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblMovieDetails.setBounds(440, 49, 160, 26);
@@ -430,40 +432,50 @@ public class moviemanager_gui
 			{
 				try
 				{
-					btnProceed_1.setEnabled(true);
-					textPane_4.setText("");
-					textPane.setText("");
-					textPane_1.setText("");
-					textPane_2.setText("");
-					textPane_3.setText("");
-					boolean isSelected = false;
-					for(int i = 0; i < 5; i++)
+					if(size < 5)
 					{
-						if(mproductID[i] == Long.parseLong(textField_1.getText()))
+						btnProceed_1.setEnabled(true);
+						btnAddMovie.setEnabled(false);
+						btnRemoveMovie.setEnabled(false);
+						textPane_4.setText("");
+						textPane.setText("");
+						textPane_1.setText("");
+						textPane_2.setText("");
+						textPane_3.setText("");
+						boolean isSelected = false;
+						for(int i = 0; i < 5; i++)
 						{
-							isSelected = true;
+							if(mproductID[i] == Long.parseLong(textField_1.getText()))
+							{
+								isSelected = true;
+							}
 						}
-					}
-					if(isSelected)
-					{
-						JOptionPane.showMessageDialog(null,"That movie has already been added to the list");
-						textField_1.setText("");
-					}
-					else
-					{
-						mproductID[size] = Long.parseLong(textField_1.getText());
-						if(size < 1)
+						if(isSelected)
 						{
-							accProductID = textField_1.getText();
+							JOptionPane.showMessageDialog(null,"That movie has already been added to the list");
+							textField_1.setText("");
 						}
 						else
 						{
-							accProductID = accProductID + " " + textField_1.getText();
+							mproductID[size] = Long.parseLong(textField_1.getText());
+							if(size < 1)
+							{
+								accProductID = textField_1.getText();
+							}
+							else
+							{
+								accProductID = accProductID + " " + textField_1.getText();
+							}
+							size++;
+							lblNewLabel_2.setText("No. of movies selected: " + size);
+							textField_1.setText("");
+							totalAmount = totalAmount + amountDue;
+							btnAddMovie_1.setEnabled(false);
 						}
-						size++;
-						lblNewLabel_2.setText("No. of movies selected: " + size);
-						textField_1.setText("");
-						totalAmount = totalAmount + amountDue; 
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null,"A maximum of 5 movies can be taken out at once");
 					}
 				}
 				catch(Exception e1)
@@ -604,6 +616,7 @@ public class moviemanager_gui
 					if(dialogResult == JOptionPane.YES_OPTION)
 					{				
 						size = 0;
+						totalAmount = 0;
 						frame.setVisible(false);
 						movie();
 					}
@@ -1011,6 +1024,7 @@ public class moviemanager_gui
 					if(dialogResult == JOptionPane.YES_OPTION)
 					{				
 						size = 0;
+						totalAmount = 0;
 						frame.setVisible(false);
 						movie();
 					}
@@ -1224,6 +1238,7 @@ public class moviemanager_gui
 					if(dialogResult == JOptionPane.YES_OPTION)
 					{				
 						size = 0;
+						totalAmount = 0;
 						frame.setVisible(false);
 						movie();
 					}
