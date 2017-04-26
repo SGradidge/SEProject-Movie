@@ -4,9 +4,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.text.*;
 
-
-public class moviemanager_gui {
-
+public class moviemanager_gui 
+{
 	private JFrame frame;
 	private moviemanager_backend mb;
 	private int accNo;
@@ -24,20 +23,24 @@ public class moviemanager_gui {
 	private JPasswordField passwordField_3;
 	private JTable table;
 
-
-
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+	public static void main(String[] args) 
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
 					moviemanager_backend mb = new moviemanager_backend();
 					moviemanager_gui mg = new moviemanager_gui();
 					mg.frame.setVisible(true);
 					System.out.println("Database successfully opened");
-				} catch (Exception e) {
+				} 
+				catch (Exception e) 
+				{
 					e.printStackTrace();
 				}
 			}
@@ -45,18 +48,15 @@ public class moviemanager_gui {
 	}
 
 	/**
-	 * Create the application.
+	 * Calls the login screen
 	 */
-	public moviemanager_gui() {
+	public moviemanager_gui() 
+	{
 		login();
-		//options();
-		//movie();
-		//customer();
-		//checkout();
 	}
 	
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the contents of the GUI.
 	 */
 	private void initialize() 
 	{
@@ -134,7 +134,8 @@ public class moviemanager_gui {
 		login.add(btnLogin);
 		
 		JButton btnClear = new JButton("Clear");
-		btnClear.addActionListener(new ActionListener() {
+		btnClear.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				textField.setText("");
@@ -143,10 +144,6 @@ public class moviemanager_gui {
 		});
 		btnClear.setBounds(573, 356, 89, 32);
 		login.add(btnClear);
-		
-		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setBounds(83, 172, 186, 173);
-		login.add(lblNewLabel_1);
 	}
 	
 	public void movie()
@@ -166,17 +163,25 @@ public class moviemanager_gui {
 		btnHome.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome.setBounds(21, 11, 107, 32);
 		movie_lookup.add(btnHome);
-		btnHome.addActionListener(new ActionListener() {
+		btnHome.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
 				{
-					frame.setVisible(false);
-					movie();
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to go home? This will cancel the current action","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						size = 0;
+						frame.setVisible(false);
+						movie();
+					}
+					
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load home screen");
 				}
 			}
 		});
@@ -185,7 +190,8 @@ public class moviemanager_gui {
 		btnLogOut.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnLogOut.setBounds(874, 11, 107, 32);
 		movie_lookup.add(btnLogOut);
-		btnLogOut.addActionListener(new ActionListener() {
+		btnLogOut.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -264,7 +270,8 @@ public class moviemanager_gui {
 		btnProceed_1.setEnabled(false);
 		btnProceed_1.setBounds(341, 503, 89, 32);
 		movie_lookup.add(btnProceed_1);
-		btnProceed_1.addActionListener(new ActionListener() {
+		btnProceed_1.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -283,7 +290,8 @@ public class moviemanager_gui {
 		btnReturnMovie.setEnabled(false);
 		btnReturnMovie.setBounds(541, 503, 113, 32);
 		movie_lookup.add(btnReturnMovie);
-		btnReturnMovie.addActionListener(new ActionListener() {
+		btnReturnMovie.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -313,16 +321,22 @@ public class moviemanager_gui {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				int dialogButton = JOptionPane.YES_NO_OPTION;
-				int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to REMOVE this movie?","Confirmation",dialogButton);
-				if(dialogResult == JOptionPane.YES_OPTION)
-				{				
-					mb.removeMovie(Integer.parseInt(textField_1.getText()));
-					JOptionPane.showMessageDialog(null, "Movie successfully removed");
-					frame.setVisible(false);
-					movie();
+				try
+				{
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to REMOVE this movie?","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						mb.removeMovie(Integer.parseInt(textField_1.getText()));
+						JOptionPane.showMessageDialog(null, "Movie successfully removed");
+						frame.setVisible(false);
+						movie();
+					}
 				}
-				
+				catch(Exception e)
+				{
+					JOptionPane.showMessageDialog(null, "Movie could not be removed");
+				}		
 			}
 		});
 		btnRemoveMovie.setBounds(721, 308, 127, 92);
@@ -334,7 +348,8 @@ public class moviemanager_gui {
 		JButton btnCheckMovie = new JButton("Look Up");
 		btnCheckMovie.setBounds(499, 109, 107, 29);
 		movie_lookup.add(btnCheckMovie);
-		btnCheckMovie.addActionListener(new ActionListener() {
+		btnCheckMovie.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -374,7 +389,8 @@ public class moviemanager_gui {
 		btnOptions.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions.setBounds(143, 11, 107, 32);
 		movie_lookup.add(btnOptions);
-		btnOptions.addActionListener(new ActionListener() {
+		btnOptions.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -384,7 +400,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Cannot load options menu");
 				}
 			}
 		});
@@ -408,7 +424,8 @@ public class moviemanager_gui {
 		btnAddMovie_1.setEnabled(false);
 		btnAddMovie_1.setBounds(440, 503, 89, 32);
 		movie_lookup.add(btnAddMovie_1);
-		btnAddMovie_1.addActionListener(new ActionListener() {
+		btnAddMovie_1.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -442,7 +459,6 @@ public class moviemanager_gui {
 						else
 						{
 							accProductID = accProductID + " " + textField_1.getText();
-							System.out.println(accProductID);
 						}
 						size++;
 						lblNewLabel_2.setText("No. of movies selected: " + size);
@@ -452,7 +468,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not add movie to the list");
 				}
 			}
 		});
@@ -475,13 +491,14 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Please check that a PDF viewer is installed");
 				}
 			}
 		});
 		
 		
-		btnAddMovie.addActionListener(new ActionListener() {
+		btnAddMovie.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -509,15 +526,23 @@ public class moviemanager_gui {
 					btnAdd.setBounds(405, 503, 89, 32);
 					movie_lookup.add(btnAdd);
 					movie_lookup.repaint();
-					btnAdd.addActionListener(new ActionListener() {
+					btnAdd.addActionListener(new ActionListener() 
+					{
 						public void actionPerformed(ActionEvent e) 
 						{
 							try
 							{
-								mb.addMovie(Integer.parseInt(textField_1.getText()), textPane_4.getText(), textPane.getText(), textPane_1.getText(), Double.parseDouble(textPane_2.getText()), 1);
-								JOptionPane.showMessageDialog(null, "Movie added successfully!");
-								frame.setVisible(false);
-								movie();
+								if(Double.parseDouble(textPane_2.getText()) < 0)
+								{
+									JOptionPane.showMessageDialog(null, "The price cannot be negative you idiot!");
+								}
+								else
+								{
+									mb.addMovie(Integer.parseInt(textField_1.getText()), textPane_4.getText(), textPane.getText(), textPane_1.getText(), Double.parseDouble(textPane_2.getText()), 1);
+									JOptionPane.showMessageDialog(null, "Movie added successfully!");
+									frame.setVisible(false);
+									movie();
+								}
 							}
 							catch(Exception e1)
 							{
@@ -532,7 +557,8 @@ public class moviemanager_gui {
 					btnCancel.setEnabled(true);
 					btnCancel.setBounds(506, 503, 113, 32);
 					movie_lookup.add(btnCancel);
-					btnCancel.addActionListener(new ActionListener() {
+					btnCancel.addActionListener(new ActionListener()
+					{
 						public void actionPerformed(ActionEvent e) 
 						{
 							try
@@ -567,17 +593,25 @@ public class moviemanager_gui {
 		btnHome_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome_2.setBounds(22, 11, 107, 32);
 		customer_details.add(btnHome_2);
-		btnHome_2.addActionListener(new ActionListener() {
+		btnHome_2.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
 				{
-					frame.setVisible(false);
-					movie();
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to go home? This will cancel the current action","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						size = 0;
+						frame.setVisible(false);
+						movie();
+					}
+					
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load home screen");
 				}
 			}
 		});
@@ -586,7 +620,8 @@ public class moviemanager_gui {
 		button_1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_1.setBounds(875, 11, 107, 32);
 		customer_details.add(button_1);
-		button_1.addActionListener(new ActionListener() {
+		button_1.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -596,7 +631,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not log out");
 				}
 			}
 		});
@@ -635,7 +670,8 @@ public class moviemanager_gui {
 		btnProceed.setBounds(354, 508, 89, 32);
 		btnProceed.setEnabled(false);
 		customer_details.add(btnProceed);
-		btnProceed.addActionListener(new ActionListener() {
+		btnProceed.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -645,7 +681,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Cannot proceed to checkout");
 				}
 			}
 		});
@@ -653,7 +689,8 @@ public class moviemanager_gui {
 		JButton button_6 = new JButton("Cancel");
 		button_6.setBounds(559, 508, 89, 32);
 		customer_details.add(button_6);
-		button_6.addActionListener(new ActionListener() {
+		button_6.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -663,7 +700,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Cannot cancel the current action");
 				}
 			}
 		});
@@ -673,7 +710,8 @@ public class moviemanager_gui {
 		btnRemoveCustomer.setEnabled(false);
 		btnRemoveCustomer.setBounds(725, 323, 144, 92);
 		customer_details.add(btnRemoveCustomer);
-		btnRemoveCustomer.addActionListener(new ActionListener() {
+		btnRemoveCustomer.addActionListener(new ActionListener()
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -737,7 +775,8 @@ public class moviemanager_gui {
 		btnEdit.setEnabled(false);
 		btnEdit.setBounds(458, 508, 89, 32);
 		customer_details.add(btnEdit);
-		btnEdit.addActionListener(new ActionListener() {
+		btnEdit.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -767,7 +806,7 @@ public class moviemanager_gui {
 							mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), textPane.getText());
 							JOptionPane.showMessageDialog(null, "Customer details edited successfully");
 							frame.setVisible(false);
-							movie();
+							customer();
 						}
 					});
 					
@@ -775,7 +814,8 @@ public class moviemanager_gui {
 					JButton btnCancel = new JButton("Cancel");
 					btnCancel.setBounds(559, 508, 89, 32);
 					customer_details.add(btnCancel);
-					btnCancel.addActionListener(new ActionListener() {
+					btnCancel.addActionListener(new ActionListener() 
+					{
 						public void actionPerformed(ActionEvent e) 
 						{
 							try
@@ -785,7 +825,7 @@ public class moviemanager_gui {
 							}
 							catch(Exception e1)
 							{
-								JOptionPane.showMessageDialog(null, "An error has occured");
+								JOptionPane.showMessageDialog(null, "Cannot cancel the current action");
 							}
 						}
 					});
@@ -800,7 +840,8 @@ public class moviemanager_gui {
 				
 		button_2.setBounds(503, 134, 107, 29);
 		customer_details.add(button_2);
-		button_2.addActionListener(new ActionListener() {
+		button_2.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -839,7 +880,8 @@ public class moviemanager_gui {
 		btnOptions_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions_2.setBounds(149, 11, 107, 32);
 		customer_details.add(btnOptions_2);
-		btnOptions_2.addActionListener(new ActionListener() {
+		btnOptions_2.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -849,7 +891,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load options screen");
 				}
 			}
 		});
@@ -881,7 +923,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Please check that a PDF viewer is installed");
 				}
 			}
 		});
@@ -927,7 +969,8 @@ public class moviemanager_gui {
 				JButton btnCancel = new JButton("Cancel");
 				btnCancel.setBounds(559, 508, 89, 32);
 				customer_details.add(btnCancel);
-				btnCancel.addActionListener(new ActionListener() {
+				btnCancel.addActionListener(new ActionListener() 
+				{
 					public void actionPerformed(ActionEvent e) 
 					{
 						try
@@ -937,14 +980,13 @@ public class moviemanager_gui {
 						}
 						catch(Exception e1)
 						{
-							JOptionPane.showMessageDialog(null, "An error has occured");
+							JOptionPane.showMessageDialog(null, "Cannot cancel current action");
 						}
 					}
 				});
 				
 			}
 		});
-
 	}
 
 	public void checkout()
@@ -958,17 +1000,25 @@ public class moviemanager_gui {
 		btnHome.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnHome.setBounds(23, 11, 107, 32);
 		checkout.add(btnHome);
-		btnHome.addActionListener(new ActionListener() {
+		btnHome.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
 				{
-					frame.setVisible(false);
-					movie();
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to go home? This will cancel the current action","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						size = 0;
+						frame.setVisible(false);
+						movie();
+					}
+					
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load home screen");
 				}
 			}
 		});
@@ -977,7 +1027,8 @@ public class moviemanager_gui {
 		button_4.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_4.setBounds(876, 11, 107, 32);
 		checkout.add(button_4);
-		button_4.addActionListener(new ActionListener() {
+		button_4.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -987,7 +1038,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not log out");
 				}
 			}
 		});
@@ -1034,7 +1085,8 @@ public class moviemanager_gui {
 		btnFinish.setBounds(392, 409, 89, 32);
 		checkout.add(btnFinish);
 		btnFinish.setEnabled(false);
-		btnFinish.addActionListener(new ActionListener() {
+		btnFinish.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -1047,7 +1099,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Movie could not be rented");
 				}
 			}
 		});
@@ -1055,7 +1107,8 @@ public class moviemanager_gui {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.setBounds(511, 409, 89, 32);
 		checkout.add(btnCancel);
-		btnCancel.addActionListener(new ActionListener() {
+		btnCancel.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -1065,7 +1118,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Cannot cancel the current action");
 				}
 			}
 		});
@@ -1074,7 +1127,8 @@ public class moviemanager_gui {
 		btnOptions_1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnOptions_1.setBounds(150, 11, 107, 32);
 		checkout.add(btnOptions_1);
-		btnOptions_1.addActionListener(new ActionListener() {
+		btnOptions_1.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -1084,7 +1138,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Cannot load the options screen");
 				}
 			}
 		});
@@ -1142,7 +1196,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Please check that a PDF viewer is installed");
 				}
 			}
 		});
@@ -1159,17 +1213,25 @@ public class moviemanager_gui {
 		button.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button.setBounds(18, 16, 107, 32);
 		options.add(button);
-		button.addActionListener(new ActionListener() {
+		button.addActionListener(new ActionListener()
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
 				{
-					frame.setVisible(false);
-					movie();
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to go home? This will cancel the current action","Confirmation",dialogButton);
+					if(dialogResult == JOptionPane.YES_OPTION)
+					{				
+						size = 0;
+						frame.setVisible(false);
+						movie();
+					}
+					
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load home screen");
 				}
 			}
 		});
@@ -1178,7 +1240,8 @@ public class moviemanager_gui {
 		button_1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_1.setBounds(144, 16, 107, 32);
 		options.add(button_1);
-		button_1.addActionListener(new ActionListener() {
+		button_1.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -1188,7 +1251,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not load options screen");
 				}
 			}
 		});
@@ -1202,7 +1265,8 @@ public class moviemanager_gui {
 		button_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		button_2.setBounds(873, 16, 107, 32);
 		options.add(button_2);
-		button_2.addActionListener(new ActionListener() {
+		button_2.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				try
@@ -1212,7 +1276,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Could not log out");
 				}
 			}
 		});
@@ -1320,7 +1384,7 @@ public class moviemanager_gui {
 				}
 				catch(Exception e1)
 				{
-					JOptionPane.showMessageDialog(null, "An error has occured");
+					JOptionPane.showMessageDialog(null, "Please check that you have a PDF viewer installed");
 				}
 			}
 		});
@@ -1402,15 +1466,22 @@ public class moviemanager_gui {
 					JButton btnClear_1 = new JButton("Clear");
 					btnClear_1.setBounds(524, 424, 90, 28);
 					options.add(btnClear_1);
-					btnClear_1.addActionListener(new ActionListener() {
+					btnClear_1.addActionListener(new ActionListener() 
+					{
 						public void actionPerformed(ActionEvent e) 
 						{
-							passwordField_1.setText("");
-							passwordField_2.setText("");
-							passwordField_3.setText("");
+							try
+							{
+								passwordField_1.setText("");
+								passwordField_2.setText("");
+								passwordField_3.setText("");
+							}
+							catch(Exception f)
+							{
+								JOptionPane.showMessageDialog(null, "Passwords could not be cleared");
+							}
 						}
-					});
-					
+						});
 				}
 				catch(Exception e1)
 				{
@@ -1418,6 +1489,5 @@ public class moviemanager_gui {
 				}
 			}
 		}); 
-	
 	}
 }

@@ -1,31 +1,26 @@
 import java.sql.*;
 import java.text.*;
-import java.util.*;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.security.*;
    
 public class moviemanager_backend 
 {
 	private Connection con;
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
- 
+	
+	/**
+	 * Default constructor + opens the connection to the database
+	 */
     public moviemanager_backend()
     {
     	try 
     	{
 			con = DriverManager.getConnection("jdbc:ucanaccess://C:/Users/Pyro/Desktop/SE Project/Movie.accdb");
-			//System.out.println("Database successfully opened");
-			
-			//Put methods here to test
-			//returnMovie(1);
-			//finish();
 		} 
     	catch (Exception e) 
     	{
     		System.out.println("Failed to open database");
-		}
-    	
+		}	
     }   
     
     /**
@@ -242,14 +237,12 @@ public class moviemanager_backend
 			    }
 			}
 			
-
 			Statement stmt = con.createStatement();
 			rs = stmt.executeQuery("SELECT Product_ID FROM Customer_Details WHERE Account_Number = " + accNo + "");
 			while (rs.next()) 
 			{
 				   accProductID = rs.getString(1).replace(""+productID, "");
 			}
-
 			
 			sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Account_Number = ?";
 			pstmt = con.prepareStatement(sql);
@@ -264,7 +257,6 @@ public class moviemanager_backend
 			pstmt.setInt(3,0);
 			pstmt.setLong(4,productID);
 			nrows = pstmt.executeUpdate();
-			
 		}
 		catch(Exception e)
 		{
@@ -283,13 +275,12 @@ public class moviemanager_backend
 		{
 			Date currentdate = new Date();
 			String date = dateFormat.format(currentdate);
-			String sql = "UPDATE Customer_Details SET Product_ID = ? WHERE Account_Number = ?";
+			String sql = "UPDATE Customer_Details SET Product_ID = ?, Amount_Outstanding = ? WHERE Account_Number = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1,accProductID);
-			pstmt.setInt(2,accNo);
+			pstmt.setInt(2,0);
+			pstmt.setInt(3,accNo);
 			int nrows = pstmt.executeUpdate();
-			
-			
 			
 			for(int i = 0; i < productID.length ; i++)
 			{
@@ -301,12 +292,6 @@ public class moviemanager_backend
 				pstmt.setLong(4,productID[i]);
 				nrows = pstmt.executeUpdate();
 			}
-			
-			sql = "UPDATE Customer_Details SET Amount_Outstanding = ? WHERE Account_Number = ?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1,0);
-			pstmt.setLong(2,accNo);
-			nrows = pstmt.executeUpdate();
 		}
 		catch(Exception e)
 		{
@@ -380,15 +365,15 @@ public class moviemanager_backend
 	{
 		try
 		{
-                    String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Contact_Number, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?,?)";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setInt(1, accNo);
-                    pstmt.setString(2, fullName);
-                    pstmt.setString(3, address);
-                    pstmt.setString(4, contactNumber);
-                    pstmt.setDouble(5, amount);
-                    pstmt.setInt(6, productID);
-                    pstmt.execute();
+			String sql = "INSERT INTO Customer_Details(Account_Number, Full_Name, Address, Contact_Number, Amount_Outstanding, Product_ID)" +  "VALUES (?,?,?,?,?,?)";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, accNo);
+            pstmt.setString(2, fullName);
+            pstmt.setString(3, address);
+            pstmt.setString(4, contactNumber);
+            pstmt.setDouble(5, amount);
+            pstmt.setInt(6, productID);
+            pstmt.execute();
 		}
 		catch(Exception e)
 		{
@@ -404,10 +389,10 @@ public class moviemanager_backend
 	{
 		try
 		{
-                    String sql = "DELETE FROM Customer_Details WHERE Account_Number = ?";
-                    PreparedStatement pstmt = con.prepareStatement(sql);
-                    pstmt.setInt(1, accNo);
-                    pstmt.execute();
+			String sql = "DELETE FROM Customer_Details WHERE Account_Number = ?";
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, accNo);
+            pstmt.execute();
 		}		
 		catch(Exception e)
 		{
@@ -518,32 +503,5 @@ public class moviemanager_backend
 		{
 			System.out.println(e);
 		}
-	}
-
-	public boolean validateNumber(String number, int type)
-	{
-		try
-		{
-			if(type == 1)
-			{
-				String regex = "[\\d+]{4}";
-				return number.matches(regex);
-			}
-			else
-			{
-				String regex = "[\\d+]{13,13}";
-				return number.matches(regex);
-			}
-		}
-		catch(Exception e)
-		{
-			System.out.println(e);
-		}
-		return false;
-	}
-	
-	public static void main (String [] args)
-	{
-		moviemanager_backend mm = new moviemanager_backend();
 	}
 }
