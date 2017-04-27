@@ -78,6 +78,9 @@ public class moviemanager_gui
 		mb = new moviemanager_backend();
 	}
 	
+	/**
+	 * This method creates the login screen
+	 */
 	public void login()
 	{
 		initialize();
@@ -146,6 +149,9 @@ public class moviemanager_gui
 		login.add(btnClear);
 	}
 	
+	/**
+	 * This method creates the movie screen
+	 */
 	public void movie()
 	{
 		initialize();
@@ -594,7 +600,10 @@ public class moviemanager_gui
 			}
 		});
 	}
-
+	
+	/**
+	 * This method creates the customer screen
+	 */
 	public void customer()
 	{
 		initialize();
@@ -1024,7 +1033,10 @@ public class moviemanager_gui
 			}
 		});
 	}
-
+	
+	/**
+	 * This method creates the checkout screen
+	 */
 	public void checkout()
 	{	
 		initialize();
@@ -1239,6 +1251,9 @@ public class moviemanager_gui
 		});
 	}
 	
+	/**
+	 * This method creates the options screen
+	 */
 	public void options()
 	{
 		initialize();

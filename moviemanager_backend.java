@@ -449,6 +449,10 @@ public class moviemanager_backend
 		return productID + 1;
 	}
 	
+	/**
+	 * This method auto-generates the next available Account Number
+	 * @return The next available Product ID is returned
+	 */
 	public int makeAccountNumber()
 	{
 		int accNo = 0;
@@ -468,6 +472,11 @@ public class moviemanager_backend
 		return accNo + 1;
 	}
 	
+	/**
+	 * This method checks the access level of the logged in user
+	 * @param username The user name of the logged in user
+	 * @return Return the users access level
+	 */
 	public int getAccessLevel(String username)
 	{
 		int accesslevel = 0;
@@ -489,6 +498,12 @@ public class moviemanager_backend
 		return accesslevel;
 	}
 	
+	/**
+	 * This method validates inputed data with regular expressions
+	 * @param type The type of data that needs to be validated
+	 * @param input The data that needs to validated
+	 * @return Returns true if its a valid expression or otherwise false
+	 */
 	public boolean validate(int type, String input)
 	{
 		if (type == 1)
