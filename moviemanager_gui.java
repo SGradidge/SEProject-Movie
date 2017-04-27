@@ -817,10 +817,21 @@ public class moviemanager_gui
 					{
 						public void actionPerformed(ActionEvent e) 
 						{
-							mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), textPane.getText());
-							JOptionPane.showMessageDialog(null, "Customer details edited successfully");
-							frame.setVisible(false);
-							customer();
+							if(!mb.validate(1, textPane.getText()))
+							{
+								JOptionPane.showMessageDialog(null, "Please enter a valid contact number");
+							}
+							else if(!mb.validate(2,textPane_5.getText()))
+							{
+								JOptionPane.showMessageDialog(null, "Please enter a valid address");
+							}
+							else
+							{
+								mb.editCustomerDetails(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(), textPane.getText());
+								JOptionPane.showMessageDialog(null, "Customer details edited successfully");
+								frame.setVisible(false);
+								customer();
+							}
 						}
 					});
 					
@@ -973,10 +984,21 @@ public class moviemanager_gui
 				{
 					public void actionPerformed(ActionEvent e) 
 					{
-						mb.addCustomer(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(),textPane.getText(), 0, 0);
-						JOptionPane.showMessageDialog(null, "Customer added successfully");
-						frame.setVisible(false);
-						customer();
+						if(!mb.validate(1, textPane.getText()))
+						{
+							JOptionPane.showMessageDialog(null, "Please enter a valid contact number");
+						}
+						else if(!mb.validate(2,textPane_5.getText()))
+						{
+							JOptionPane.showMessageDialog(null, "Please enter a valid address");
+						}
+						else
+						{
+							mb.addCustomer(Integer.parseInt(textField_2.getText()), textPane_4.getText(), textPane_5.getText(),textPane.getText(), 0, 0);
+							JOptionPane.showMessageDialog(null, "Customer added successfully");
+							frame.setVisible(false);
+							customer();
+						}
 					}
 				});
 				

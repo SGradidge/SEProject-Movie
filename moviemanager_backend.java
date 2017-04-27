@@ -488,6 +488,20 @@ public class moviemanager_backend
 		}
 		return accesslevel;
 	}
+	
+	public boolean validate(int type, String input)
+	{
+		if (type == 1)
+		{
+			String regex = "\\d+";
+			return input.matches(regex) && input.length() == 10;
+		}
+		else
+		{
+			String regex = "[0-9a-zA-Z\\s]+";
+			return input.matches(regex);
+		}
+	}
 
 	/**
 	 * This method closes the connection to the database once the program is terminated
